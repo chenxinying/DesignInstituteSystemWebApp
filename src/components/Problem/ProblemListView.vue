@@ -42,13 +42,13 @@ export default {
 
       //滚动至底部
       if(scrollTop + offsetHeight >= scrollHeight && !this.loadEnd){
-        this.requestProblem(this.queryParams)
+        this.requestProblem()
       }
     },
     onClickLoadMore : function(){
       this.$refs.viewBox.getScrollBody().removeEventListener('scroll', this.onScroll, false)
       this.updateProblemLoadEnd(false)
-      this.requestProblem(this.queryParams).then(() => {
+      this.requestProblem().then(() => {
         this.$refs.viewBox.getScrollBody().addEventListener('scroll', this.onScroll, false)
       })
     }
@@ -77,16 +77,6 @@ export default {
       }),
     tip : function() {
       return this.loadEnd ? '暂无数据 点击刷新' : '正在加载'
-    },
-    queryParams : function() {
-      var obj = {}
-      if(this.state != -1)
-        obj.state = this.state
-
-      if(this.chargerId != -1)
-        obj.changer_id = this.chargerId
-
-      return obj
     }
   },
   data () {
@@ -95,7 +85,8 @@ export default {
     }
   },
   created () {
-    this.requestProblem(this.queryParams)
+    this.requestProblem()
+    console.log("created")
   },
   mounted () {
     this.$nextTick(function () {

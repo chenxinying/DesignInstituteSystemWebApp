@@ -60,10 +60,10 @@ export default {
     Group, Selector, Search, XButton, TransferDom, Popup, Flexbox, FlexboxItem
   },
   props: {
-    chargerId : {
+    filterChargerId : {
       default: -1
     },
-    state : {
+    filterState : {
       default: -1
     }
   },
@@ -73,7 +73,9 @@ export default {
       subprojectId: -1,
       level: '全部',
       creatorId : -1,
+      chargerId : this.filterChargerId,
 
+      state : this.filterState,
       stateArray :[{key:-1, value:"全部"},
         {key:1, value:"待解决"},
         {key:3, value:"已解决"}],
@@ -107,7 +109,9 @@ export default {
       'requestProblem',
       'getProjectNames',
       'updateSubProjectNames',
-      'getProblemUserNames'
+      'getProblemUserNames',
+      'clearProblem',
+      'updateProblemQueryParams'
     ]),
     onSubmit () {
       this.onClickSure()
@@ -119,8 +123,28 @@ export default {
       this.isFocus = false;
     },
     onClickSure () {
-
       //进行筛选
+      this.clearProblem()
+      this.updateProblemQueryParams(this.queryParams)
+      this.requestProblem()
+      this.showFilter = false
+
+    },
+    onProjectChange (projectId) {
+      if(projectId == -1)
+        this.subprojectId = -1
+
+      this.updateSubProjectNames(projectId)
+    }
+  },
+  computed: {
+    ...mapState({
+      projectNames : state => state.problem.projectNames,
+      subprojectNames : state => state.problem.subprojectNames,
+      chargerNames: state => state.problem.chargerNames,
+      creatorNames: state => state.problem.creatorNames,
+    }),
+    queryParams : function(){
       var queryParams = {}
       if(this.projectId != -1)
         queryParams.project_id = this.projectId
@@ -149,28 +173,17 @@ export default {
       if(this.keyword != '')
         queryParams.keyword = this.keyword
 
-      this.requestProblem(queryParams)
-      this.showFilter = false
-
-    },
-    onProjectChange (projectId) {
-      if(projectId == -1)
-        this.subprojectId = -1
-
-      this.updateSubProjectNames(projectId)
+      return queryParams
     }
-  },
-  computed: {
-    ...mapState({
-      projectNames : state => state.problem.projectNames,
-      subprojectNames : state => state.problem.subprojectNames,
-      chargerNames: state => state.problem.chargerNames,
-      creatorNames: state => state.problem.creatorNames,
-    })
   },
   created () {
     this.getProjectNames()
     this.getProblemUserNames()
-  }
+    this.updateProblemQueryParams(this.queryParams)
+    console.log("filter created")
+  },
+  activated () {
+    this.updateProblemQueryParams(this.queryParams)
+  },
 }
 </script>
