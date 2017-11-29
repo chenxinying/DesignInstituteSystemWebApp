@@ -1,7 +1,6 @@
 <template>
 
-  <div class="search-fix-top">
-
+  <div>
     <search
     v-model="keyword"
     auto-scroll-to-top
@@ -60,15 +59,21 @@ export default {
   components: {
     Group, Selector, Search, XButton, TransferDom, Popup, Flexbox, FlexboxItem
   },
+  props: {
+    chargerId : {
+      default: -1
+    },
+    state : {
+      default: -1
+    }
+  },
   data () {
     return {
       projectId: -1,
       subprojectId: -1,
       level: '全部',
-      chargerId : -1,
       creatorId : -1,
 
-      state: -1,
       stateArray :[{key:-1, value:"全部"},
         {key:1, value:"待解决"},
         {key:3, value:"已解决"}],
@@ -169,20 +174,3 @@ export default {
   }
 }
 </script>
-
-
-<style>
-
-.search-fix-top{
-  width: 100%;
-  position: absolute;
-  left: 0px;
-  top: 0px;
-  z-index: 100;
-}
-
-.filter-btn{
-  width: 80%;
-  line-height: 1.5;
-}
-</style>

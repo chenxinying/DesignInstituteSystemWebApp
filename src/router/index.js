@@ -66,7 +66,7 @@ export default new Router({
       component : ProjectDetail
     },
     {
-      path: '/project/:prj_id/subproject/:subprj_id',
+      path: '/project/:project_id/subproject/:subproject_id',
       component : SubProjectDetail
     },
     {

@@ -10,7 +10,7 @@
     </div>
 
     <view-box ref="viewBox">
-    <panel header="模板厂列表" :list="projects" type="1" style="padding-top:40px;"></panel>
+    <panel header="模板厂列表" :list="projects" type="3" style="padding-top:40px;"></panel>
     <div @click="loadEnd && onClickLoadMore()">
       <load-more :tip="tip" :show-loading="!loadEnd" background-color="#fbf9fe"></load-more>
     </div>

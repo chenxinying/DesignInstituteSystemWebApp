@@ -5,7 +5,8 @@ const state = {
   loadEnd : false,
   project_list : [],
   current_page : 1,
-  items_per_page : 10
+  items_per_page : 10,
+  subproject_flow_states : [{}]
 }
 
 const getters = {
@@ -23,6 +24,12 @@ const mutations = {
   },
   [types.UPDATE_PROJECT_LOAD_END] (state, loadEnd){
     state.loadEnd = loadEnd
+  },
+  [types.UPDATE_PROJECT_FLOW_STATES] (state, states){
+    state.subproject_flow_states = [{}]
+    states.forEach(element => {
+      state.subproject_flow_states.push(element)
+    });
   },
 }
 
@@ -53,6 +60,22 @@ const actions = {
   updateProjectLoadEnd ({commit}, loadEnd) {
     commit(types.UPDATE_PROJECT_LOAD_END, loadEnd)
   },
+
+  getSubprojectFlowState({commit}, param){
+
+    return new Promise((resolve, reject) => {
+
+    api.getSubprojectFlowState(param,
+      flowStates => {
+        commit(types.UPDATE_PROJECT_FLOW_STATES, flowStates)
+        resolve()
+      },
+      flowStates => {
+        resolve()
+      })
+
+    })
+  }
 }
 
 export default {

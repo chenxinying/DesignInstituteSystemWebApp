@@ -89,4 +89,16 @@ export default {
       }
     )
   },
+  getSubprojectFlowState(params, cb, errorCb){
+    Vue.http.get(_request_host + 'admin/Subproject/find_state',
+    {params}
+    ).then(
+      (response) => {
+        cb(response.data)
+      },
+      (response) => {
+        errorCb(response.data)
+      }
+    )
+  },
 }

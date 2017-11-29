@@ -2,30 +2,30 @@
   <div>
     <x-header class="search-fix-top">问题详情</x-header>
 
-  <div style="padding-top:40px;">
-    <group>search-
-      <cell title="问题名称" primary="content" :value="problem_info.title"></cell>
-      <cell title="问题状态" :value="problem_info.state_name"></cell>
-      <cell title="问题阶段" value="配模阶段"></cell>
-      <cell title="问题部位" :value="problem_info.subtype_name"></cell>
-      <cell title="问题等级" :value="problem_info.problemGrade"></cell>
-      <cell title="问题详情" primary="content" :value="problem_info.description" value-align="left"></cell>
-    </group>
+    <div>
+      <group>
+        <cell title="问题名称" primary="content" :value="problem_info.title"></cell>
+        <cell title="问题状态" :value="problem_info.state_name"></cell>
+        <cell title="问题阶段" value="配模阶段"></cell>
+        <cell title="问题部位" :value="problem_info.subtype_name"></cell>
+        <cell title="问题等级" :value="problem_info.problemGrade"></cell>
+        <cell title="问题详情" primary="content" :value="problem_info.description" value-align="left"></cell>
+      </group>
 
-    <group title="问题截图">
-      <flexbox :gutter="0" wrap="wrap">
-        <flexbox-item :span="1/3" v-for="(item, index) in problem_info.file_list" :key="item.id">
-          <div class="flex-demo">
-            <img class="previewer-demo-img" :src="item" @click="show(index)" width="100" height="100">
-          </div>
-        </flexbox-item>
-      </flexbox>
-    </group>
-  </div>
+      <group title="问题截图">
+        <flexbox :gutter="0" wrap="wrap">
+          <flexbox-item :span="1/3" v-for="(item, index) in problem_info.file_list" :key="item.id">
+            <div class="flex-demo">
+              <img class="previewer-demo-img" :src="item" @click="show(index)" width="100" height="100">
+            </div>
+          </flexbox-item>
+        </flexbox>
+      </group>
+    </div>
 
-  <div v-transfer-dom>
-    <previewer :list="list" ref="previewer" :options="options"></previewer>
-  </div>
+    <div v-transfer-dom>
+      <previewer :list="list" ref="previewer" :options="options"></previewer>
+    </div>
 
   </div>
 </template>
