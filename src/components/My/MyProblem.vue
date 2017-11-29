@@ -28,7 +28,6 @@ export default {
       }),
   },
   activated () {
-    //this.clearProblem()
     this.updateProblemQueryParams({changer_id : this.openid, state : 1})
     this.clearProblem()
     this.requestProblem()

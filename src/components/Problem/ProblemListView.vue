@@ -86,7 +86,6 @@ export default {
   },
   created () {
     this.requestProblem()
-    console.log("created")
   },
   mounted () {
     this.$nextTick(function () {
