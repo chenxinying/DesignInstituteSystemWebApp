@@ -9,7 +9,12 @@ const state = {
   subprojectNames : [{key:-1, value:'全部'}],
   chargerNames : [{key:-1, value:'全部'}],
   creatorNames : [{key:-1, value:'全部'}],
-  queryParams : {}
+  queryParams : {},
+
+  myLoadEnd : false,
+  myProblems : [],
+  myStart : 0
+
 }
 
 const getters = {
@@ -50,36 +55,65 @@ const mutations = {
   },
   [types.UPDATE_PROBLEM_QUERY_PARAMS] (state, params){
     state.queryParams = params
-  }
+  },
+  [types.ADD_MY_PROBLEM] (state, problems) {
+    problems.forEach((value, index, array) => state.myProblems.push(value))
+    sessionStorage.setItem('myProblems', JSON.stringify(state.myProblems))
+  },
+  [types.UPDATE_MY_PROBLEM] (state, problems) {
+    state.myProblems = []
+    problems.forEach((value, index, array) => state.myProblems.push(value))
+    sessionStorage.setItem('problems', JSON.stringify(state.myProblems))
+  },
+  [types.UPDATE_MY_PROBLEM_LOAD_END] (state, loadEnd){
+    state.myLoadEnd = loadEnd
+  },
+  [types.UPDATE_MY_PROBLEM_START] (state, start){
+    state.myStart = start
+  },
 }
 
 const actions = {
-  requestProblem({ commit, state, rootState }){
+  requestProblem({ commit, state, rootState }, isMyProblem){
     return new Promise((resolve, reject) => {
       api.requestProblem({
         company_id: rootState.user_info.company_id,
-        start: state.start,
         count: rootState.request_count,
+        start: isMyProblem ? state.myStart : state.start,
         ...state.queryParams
         },
         problems => {
-          if(problems.length < rootState.request_count)
-            commit(types.UPDATE_PROBLEM_LOAD_END, true)
+          if(isMyProblem){
+            if(problems.length < rootState.request_count)
+              commit(types.UPDATE_MY_PROBLEM_LOAD_END, true)
 
-          commit(types.UPDATE_PROBLEM_START, state.start + problems.length)
-          commit(types.ADD_PROBLEM, problems)
+            commit(types.UPDATE_MY_PROBLEM_START, state.myStart + problems.length)
+            commit(types.ADD_MY_PROBLEM, problems)
+          }else{
+            if(problems.length < rootState.request_count)
+              commit(types.UPDATE_PROBLEM_LOAD_END, true)
+
+            commit(types.UPDATE_PROBLEM_START, state.start + problems.length)
+            commit(types.ADD_PROBLEM, problems)
+          }
           resolve()
         },
         problems => {
-          commit(types.UPDATE_PROBLEM_LOAD_END, true)
+          isMyProblem ? commit(types.UPDATE_MY_PROBLEM_LOAD_END, true) : commit(types.UPDATE_PROBLEM_LOAD_END, true)
           resolve()
       })
     })
   },
-  clearProblem({ commit, state, rootState }){
-    commit(types.UPDATE_PROBLEM_LOAD_END, false)
-    commit(types.UPDATE_PROBLEM_START, 0)
-    commit(types.UPDATE_PROBLEM, [])
+  clearProblem({ commit }, isMyProblem){
+    if(isMyProblem){
+      commit(types.UPDATE_MY_PROBLEM_LOAD_END, false)
+      commit(types.UPDATE_MY_PROBLEM_START, 0)
+      commit(types.UPDATE_MY_PROBLEM, [])
+    }else{
+      commit(types.UPDATE_PROBLEM_LOAD_END, false)
+      commit(types.UPDATE_PROBLEM_START, 0)
+      commit(types.UPDATE_PROBLEM, [])
+    }
   },
   updateProblemLoadEnd ({commit}, loadEnd) {
     commit(types.UPDATE_PROBLEM_LOAD_END, loadEnd)

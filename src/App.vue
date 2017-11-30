@@ -79,9 +79,4 @@ body {
   z-index: 100;
 }
 
-.filter-btn{
-  width: 80%;
-  line-height: 1.5;
-}
-
 </style>

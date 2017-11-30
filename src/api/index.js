@@ -78,7 +78,31 @@ export default {
     )
   },
   getProjectList(params, cb, errorCb){
-    Vue.http.get(_request_host + 'admin/Project/project_list',
+    Vue.http.get(_request_host + 'admin/Project/getProjectList',
+    {params}
+    ).then(
+      (response) => {
+        cb(response.data)
+      },
+      (response) => {
+        errorCb(response.data)
+      }
+    )
+  },
+  getSubprojectList(params, cb, errorCb){
+    Vue.http.get(_request_host + 'admin/Project/getSubprojectList',
+    {params}
+    ).then(
+      (response) => {
+        cb(response.data)
+      },
+      (response) => {
+        errorCb(response.data)
+      }
+    )
+  },
+  getMySubProjects(params, cb, errorCb){
+    Vue.http.get(_request_host + 'admin/Project/ListUserSuproject',
     {params}
     ).then(
       (response) => {

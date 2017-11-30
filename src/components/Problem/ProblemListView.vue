@@ -35,7 +35,6 @@ export default {
       //滚动至底部
       if(scrollTop + offsetHeight >= scrollHeight && !this.loadEnd){
         this.requestProblem()
-
       }
     },
     onClickLoadMore : function(){

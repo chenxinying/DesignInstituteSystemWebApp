@@ -1,70 +1,44 @@
 <template>
   <div style="height:100%;">
     <div class="search-fix-top">
-      <search
-      v-model="keyword"
-      auto-scroll-to-top
-      @on-submit="onSubmit"
-      ref="search">
-      </search>
+      <search v-model="keyword" auto-scroll-to-top @on-submit="onSubmit"></search>
     </div>
-
-    <view-box ref="viewBox">
-    <panel header="模板厂列表" :list="projects" type="3" style="padding-top:40px;"></panel>
-    <div @click="loadEnd && onClickLoadMore()">
-      <load-more :tip="tip" :show-loading="!loadEnd" background-color="#fbf9fe"></load-more>
-    </div>
-    </view-box>
+    <list-view header="模板厂列表" :list="projects" type="3" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:45px;"></list-view>
   </div>
 </template>
 
 <script>
-import { Panel, ViewBox, LoadMore, Search, XButton } from 'vux'
+import { Search } from 'vux'
 import { mapState, mapActions } from 'vuex'
-import Tabbar from './Tabbar'
+import ListView from '../ListView'
 
 export default {
   components: {
-    Panel,
-    ViewBox,
-    Tabbar,
-    LoadMore,
     Search,
-    XButton
+    ListView
   },
   methods: {
      ...mapActions([
-      'getProjectList',
-      'updateProjectLoadEnd'
+      'getProjectList'
     ]),
     onSubmit () {
-      console.log("a")
+      console.log("执行搜索")
     },
-    onScroll : function(){
-      var scrollTop = this.$refs.viewBox.getScrollTop()
-      var offsetHeight = this.$refs.viewBox.getScrollBody().offsetHeight
-      var scrollHeight = this.$refs.viewBox.getScrollBody().scrollHeight
-
-      this.scrollTop = scrollTop
-
-      //滚动至底部
-      if(scrollTop + offsetHeight >= scrollHeight && !this.loadEnd){
-        this.requestProblem()
-      }
+    onScrollEnd : function(){
+      this.getProjectList().then(() => {
+        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+      })
     },
     onClickLoadMore : function(){
-      this.$refs.viewBox.getScrollBody().removeEventListener('scroll', this.onScroll, false)
-      this.updateProjectLoadEnd(false)
       this.getProjectList().then(() => {
-        this.$refs.viewBox.getScrollBody().addEventListener('scroll', this.onScroll, false)
+        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+        this.$refs.listView.addScrollHandler()
       })
-    }
+    },
   },
   data () {
     return {
-     scrollTop : 0,
-      keyword: '',
-      isFocus: false,
+      keyword: ''
     }
   },
   computed: {
@@ -81,26 +55,13 @@ export default {
             });
             return showList
           },
-        loadEnd : state => state.project.loadEnd
-      }),
-      tip : function() {
-        return this.loadEnd ? '暂无数据 点击刷新' : '正在加载'
-      }
+        isLoadEnd : state => state.project.loadEnd
+      })
   },
   created () {
-    this.getProjectList()
-  },
-  mounted () {
-    this.$nextTick(function () {
-      this.$refs.viewBox.getScrollBody().addEventListener('scroll', this.onScroll, false)
+    this.getProjectList().then(() => {
+      this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
     })
-  },
-  activated () {
-    this.$refs.viewBox.scrollTo(this.scrollTop)
-    this.$refs.viewBox.getScrollBody().addEventListener('scroll', this.onScroll, false)
-  },
-  deactivated () {
-    this.$refs.viewBox.getScrollBody().removeEventListener('scroll', this.onScroll, false)
   }
 }
 </script>

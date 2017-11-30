@@ -21,14 +21,14 @@
           </group>
 
           <group title="问题筛选">
-            <selector title="问题状态" :options="stateArray" v-model="state" value-align="left"></selector>
+            <selector title="问题状态" :options="stateArray" v-model="state" value-align="left" v-show="filterState==-1"></selector>
             <selector title="问题阶段" :options="stepArray" v-model="step" value-align="left"></selector>
             <selector title="问题部位" :options="regionArray" v-model="region" value-align="left"></selector>
             <selector title="问题等级" :options="['全部', '一级','二级', '三级','四级', '五级']" v-model="level" value-align="left"></selector>
           </group>
 
           <group title="人员筛选">
-              <selector title="负责人" :options="chargerNames" v-model="chargerId" value-align="left"></selector>
+              <selector title="负责人" :options="chargerNames" v-model="chargerId" value-align="left" v-show="filterChargerId==-1"></selector>
               <selector title="审核人" :options="creatorNames" v-model="creatorId" value-align="left"></selector>
           </group>
 
@@ -65,6 +65,9 @@ export default {
     },
     filterState : {
       default: -1
+    },
+    isMyProblem : {
+      default : false
     }
   },
   data () {
@@ -124,11 +127,10 @@ export default {
     },
     onClickSure () {
       //进行筛选
-      this.clearProblem()
+      this.clearProblem(this.isMyProblem)
       this.updateProblemQueryParams(this.queryParams)
-      this.requestProblem()
+      this.requestProblem(this.isMyProblem)
       this.showFilter = false
-
     },
     onProjectChange (projectId) {
       if(projectId == -1)
@@ -197,3 +199,10 @@ export default {
   }
 }
 </script>
+
+<style>
+.filter-btn{
+  width: 80%;
+  line-height: 1.5;
+}
+</style>

@@ -116,9 +116,11 @@ export default {
     ...mapState({
       subproject : state => {
           var subproject = {}
-          var project = state.project.project_list.find(item => item.project_id == state.route.params.project_id)
+          var project = state.project.subproject_list.find(item => item.project_id == state.route.params.project_id)
           if(project){
-            subproject = project.subproject_list.find(item => item.subproject_id == state.route.params.subproject_id)
+            subproject = project.data.find(item => item.subproject_id == state.route.params.subproject_id)
+          }else{
+            //重新请求
           }
           return subproject
       },
