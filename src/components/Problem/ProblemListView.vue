@@ -19,14 +19,6 @@ export default {
     ViewBox,
     LoadMore
   },
-  props: {
-    chargerId : {
-      default: -1
-    },
-    state : {
-      default: -1
-    }
-  },
   methods: {
     ...mapActions([
       'requestProblem',
@@ -43,6 +35,7 @@ export default {
       //滚动至底部
       if(scrollTop + offsetHeight >= scrollHeight && !this.loadEnd){
         this.requestProblem()
+
       }
     },
     onClickLoadMore : function(){
@@ -83,9 +76,6 @@ export default {
     return {
       scrollTop : 0
     }
-  },
-  created () {
-    this.requestProblem()
   },
   mounted () {
     this.$nextTick(function () {

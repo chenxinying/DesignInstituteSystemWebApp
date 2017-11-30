@@ -179,13 +179,20 @@ export default {
   created () {
     this.getProjectNames()
     this.getProblemUserNames()
-    this.chargerId = this.filterChargerId
-    this.state = this.filterState
-    this.updateProblemQueryParams(this.queryParams)
   },
   activated () {
-    this.chargerId = this.filterChargerId
-    this.state = this.filterState
+
+    if(this.projectId == -1)
+        this.subprojectId = -1
+
+    this.updateSubProjectNames(this.projectId)
+
+    if(this.filterChargerId != -1)
+      this.chargerId = this.filterChargerId
+
+    if(this.filterState != -1)
+      this.state = this.filterState
+
     this.updateProblemQueryParams(this.queryParams)
   }
 }

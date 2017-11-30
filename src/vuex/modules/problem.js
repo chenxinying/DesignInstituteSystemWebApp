@@ -77,6 +77,7 @@ const actions = {
     })
   },
   clearProblem({ commit, state, rootState }){
+    commit(types.UPDATE_PROBLEM_LOAD_END, false)
     commit(types.UPDATE_PROBLEM_START, 0)
     commit(types.UPDATE_PROBLEM, [])
   },

@@ -8,10 +8,20 @@
     <div style="padding-top:46px;">
 
     <group title="项目信息">
-      <cell title="收到底图时间" value="2017-11-28" @click.native="onClick"></cell>
-      <cell title="签字确认底图时间" value="2017-12-05" @click.native="onClick"></cell>
-      <cell title="出终版底图成果时间" value="2017-12-05" @click.native="onClick"></cell>
-      <cell title="项目结束节点时间" value="2017-12-05" @click.native="onClick"></cell>
+      <cell title="收到底图时间" :value="subproject.start_time_plan" @click.native="onClick"></cell>
+      <cell title="出终版底图成果时间" :value="subproject.dwg_end_plan" @click.native="onClick"></cell>
+
+      <cell title="签字确认底图时间" :value="subproject.design_start_plan" @click.native="onClick"></cell>
+      <cell title="项目结束节点时间" :value="subproject.end_time_plan" @click.native="onClick"></cell>
+
+      <cell title="离项目结束还剩">
+        <clocker :time="subproject.end_time_plan">
+          <span style="color:red;">%D 天</span>
+          <span style="color:green;">%H 小时</span>
+          <span style="color:blue;">%M 分 %S 秒</span>
+        </clocker>
+      </cell>
+
     </group>
 
     <group title="项目节点记录">
@@ -88,13 +98,13 @@
 </template>
 
 <script>
-import { XHeader, Group, Cell, Flow, FlowState, FlowLine } from 'vux'
+import { XHeader, Group, Cell, Flow, FlowState, FlowLine, Clocker } from 'vux'
 import { mapState, mapActions } from 'vuex'
 
 export default {
   components: {
     XHeader, Group, Cell,
-    Flow, FlowState, FlowLine
+    Flow, FlowState, FlowLine, Clocker
   },
   methods: {
     ...mapActions(['getSubprojectFlowState'])

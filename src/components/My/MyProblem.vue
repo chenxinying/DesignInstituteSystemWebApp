@@ -24,16 +24,18 @@ export default {
   },
   computed:{
     ...mapState({
-        openid: state => state.openid
+        openid: state => state.openid,
+        queryParams: state => state.problem.queryParams
       }),
   },
   activated () {
+    this.oldQueryParams = {...this.queryParams}
     this.updateProblemQueryParams({changer_id : this.openid, state : 1})
     this.clearProblem()
     this.requestProblem()
   },
   deactivated () {
-    this.updateProblemQueryParams({})
+    this.updateProblemQueryParams(this.oldQueryParams)
   },
   methods : {
      ...mapActions([
@@ -41,6 +43,11 @@ export default {
       'clearProblem',
       'updateProblemQueryParams'
     ]),
+  },
+  data () {
+    return {
+      oldQueryParams : {}
+    }
   }
 }
 </script>
