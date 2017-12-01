@@ -4,6 +4,5 @@ export default  {
   user_info : {
     company_id : 1
   },
-  code : null,
   request_count : 11,
 }

@@ -3,7 +3,7 @@
     <div class="search-fix-top">
       <search v-model="keyword" auto-scroll-to-top @on-submit="onSubmit"></search>
     </div>
-    <list-view header="模板厂列表" :list="projects" type="3" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:45px;"></list-view>
+    <list-view header="模板厂列表" :list="projects" type="1" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:45px;"></list-view>
   </div>
 </template>
 
@@ -11,6 +11,7 @@
 import { Search } from 'vux'
 import { mapState, mapActions } from 'vuex'
 import ListView from '../ListView'
+const Holder = require('holderjs');
 
 export default {
   components: {
@@ -21,18 +22,30 @@ export default {
      ...mapActions([
       'getProjectList'
     ]),
+    updateImg () {
+      setTimeout(()=>{
+        var myImage = document.querySelectorAll('.weui-media-box__thumb');
+        myImage.forEach(element => {
+          Holder.run({
+            images: element
+          });
+        })
+      }, 500)
+    },
     onSubmit () {
       console.log("执行搜索")
     },
     onScrollEnd : function(){
       this.getProjectList().then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+        this.updateImg()
       })
     },
     onClickLoadMore : function(){
       this.getProjectList().then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.$refs.listView.addScrollHandler()
+        this.updateImg()
       })
     },
   },
@@ -45,9 +58,15 @@ export default {
     ...mapState({
         projects: state => {
             var showList = []
-            state.project.project_list.forEach(element => {
+            state.project.projectList.forEach(element => {
+
+              var text = "&text=" + element.name.substring(0, 4)
+              var bgArray = ['F86E61', '4DA9EA', '05CC91', 'F8B65F', '578AA9', '5F70A8']
+              var bgIndex = element.project_id % bgArray.length
+              var bg = "&bg=" + bgArray[bgIndex]
+
               var item = {
-                src : element.headimgurl,
+                src : "holder.js/60x60?fg=fff" + text + bg,
                 title : element.name,
                 url : '/project/' + element.project_id,
               }
@@ -61,6 +80,7 @@ export default {
   created () {
     this.getProjectList().then(() => {
       this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+      this.updateImg()
     })
   }
 }

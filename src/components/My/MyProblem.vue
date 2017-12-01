@@ -31,6 +31,7 @@ export default {
           state.problem.myProblems.forEach(element => {
             var item = {
               src: element.file_list[0],
+              fallbackSrc: 'http://placeholder.qiniudn.com/60x60/3cc51f/ffffff',
               title: element.title,
               desc: element.subprj_name,
               url: '/problem/' + element.id,

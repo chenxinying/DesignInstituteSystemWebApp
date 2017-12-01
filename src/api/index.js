@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { AjaxPlugin } from 'vux'
 Vue.use(AjaxPlugin)
 
-let _request_host = "http://192.168.3.40/design_institute/public/"
+let _request_host = "http://192.168.3.158/DesignInstituteSystem/design_institute/public/"
 
 export default {
   getProjectNames(params, cb, errorCb){

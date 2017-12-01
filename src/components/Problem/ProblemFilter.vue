@@ -16,7 +16,7 @@
         <div style="width:220px;">
 
           <group title="项目筛选">
-            <selector title="总项目" :options="projectNames" v-model="projectId" value-align="left" @on-change="onProjectChange"></selector>
+            <selector title="模板厂" :options="projectNames" v-model="projectId" value-align="left" @on-change="onProjectChange"></selector>
             <selector title="子项目" :options="subprojectNames" v-model="subprojectId" value-align="left"></selector>
           </group>
 
@@ -116,6 +116,16 @@ export default {
       'clearProblem',
       'updateProblemQueryParams'
     ]),
+    updateImg () {
+      setTimeout(()=>{
+        var myImage = document.querySelectorAll('.weui-media-box__thumb');
+        myImage.forEach(element => {
+          Holder.run({
+            images: element
+          });
+        })
+      }, 500)
+    },
     onSubmit () {
       this.onClickSure()
     },
@@ -129,7 +139,9 @@ export default {
       //进行筛选
       this.clearProblem(this.isMyProblem)
       this.updateProblemQueryParams(this.queryParams)
-      this.requestProblem(this.isMyProblem)
+      this.requestProblem(this.isMyProblem).then(()=>{
+        this.updateImg()
+      })
       this.showFilter = false
     },
     onProjectChange (projectId) {

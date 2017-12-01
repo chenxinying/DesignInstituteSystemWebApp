@@ -3,7 +3,7 @@
     <div class="search-fix-top">
       <problem-filter></problem-filter>
     </div>
-    <list-view :list="problems" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:45px;"></list-view>
+    <list-view header="问题列表" :list="problems" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:45px;"></list-view>
   </div>
 </template>
 
@@ -22,15 +22,27 @@ export default {
      ...mapActions([
       'requestProblem'
     ]),
+    updateImg () {
+      setTimeout(()=>{
+        var myImage = document.querySelectorAll('.weui-media-box__thumb');
+        myImage.forEach(element => {
+          Holder.run({
+            images: element
+          });
+        })
+      }, 500)
+    },
     onScrollEnd : function(){
       this.requestProblem().then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+        this.updateImg()
       })
     },
     onClickLoadMore : function(){
       this.requestProblem().then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.$refs.listView.addScrollHandler()
+        this.updateImg()
       })
     }
   },
@@ -39,8 +51,14 @@ export default {
       problems: state => {
           var showList = []
           state.problem.problems.forEach(element => {
+
+            var bgArray = ['','62DC49', '4E6AA9', 'DCDC4A', '00FFFF', 'FF00FF', 'FF0000', '5F70A8']
+            var text = "&text=" + element.subtype_name
+            var bg = "&bg=" + bgArray[element.subtype_id]
+
             var item = {
-              src: element.file_list[0],
+              src: "holder.js/60x60?fg=fff" + text + bg,
+              //fallbackSrc: "holder.js/60x60?fg=fff" + text + bg,
               title: element.title,
               desc: element.subprj_name,
               url: '/problem/' + element.id,
@@ -60,6 +78,7 @@ export default {
   created () {
     this.requestProblem().then(() => {
       this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+      this.updateImg()
     })
   },
 }
