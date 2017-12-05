@@ -4,7 +4,7 @@
       <x-header>我待解决的问题</x-header>
     </div>
     <div class="search-fix-top" style="top:46px;">
-      <problem-filter :filter-charger-id="openid" filter-state="1" :is-my-problem="true"></problem-filter>
+      <problem-filter :filter-charger-id="openid" filter-state="1" @on-click-sure="onClickSure" ref="problemFilter"></problem-filter>
     </div>
     <list-view :list="problems" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:91px;"></list-view>
   </div>
@@ -25,13 +25,16 @@ export default {
   computed:{
     ...mapState({
         openid: state => state.openid,
-        queryParams: state => state.problem.queryParams,
         problems: state => {
           var showList = []
-          state.problem.myProblems.forEach(element => {
+          state.problem_my.problems.forEach(element => {
+
+            var bgArray = ['','62DC49', '4E6AA9', 'DCDC4A', '00FFFF', 'FF00FF', 'FF0000', 'CFCFCF']
+            var text = "&text=" + element.subtype_name
+            var bg = "&bg=" + bgArray[element.subtype_id]
+
             var item = {
-              src: element.file_list[0],
-              fallbackSrc: 'http://placeholder.qiniudn.com/60x60/3cc51f/ffffff',
+              src: "holder.js/60x60?fg=fff" + text + bg,
               title: element.title,
               desc: element.subprj_name,
               url: '/problem/' + element.id,
@@ -45,43 +48,55 @@ export default {
           })
           return showList
         },
-        isLoadEnd : state => state.problem.myLoadEnd
+        isLoadEnd : state => state.problem_my.loadEnd
       }),
   },
   created () {
-    this.oldQueryParams = {...this.queryParams}
-    this.updateProblemQueryParams({changer_id : this.openid, state : 1})
-    this.requestProblem(true).then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+    this.addMyProblem().then(() => {
+      this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+      this.updateImg()
     })
   },
   activated () {
-    this.oldQueryParams = {...this.queryParams}
-    this.updateProblemQueryParams({changer_id : this.openid, state : 1})
+    //this.updateProblemQueryParams({changer_id : this.openid, state : 1})
   },
   deactivated () {
-    this.updateProblemQueryParams(this.oldQueryParams)
+    //this.updateProblemQueryParams(this.oldQueryParams)
   },
   methods : {
      ...mapActions([
-      'requestProblem',
-      'updateProblemQueryParams'
+      'addMyProblem',
+      'clearMyProblem',
     ]),
-    onScrollEnd : function(){
-      this.requestProblem(true).then(() => {
+    updateImg () {
+      setTimeout(()=>{
+        var myImage = document.querySelectorAll('.weui-media-box__thumb');
+        myImage.forEach(element => {
+          Holder.run({
+            images: element
+          });
+        })
+      }, 0)
+    },
+    onScrollEnd () {
+      this.addMyProblem(this.$refs.problemFilter.queryParams).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+        this.updateImg()
       })
     },
-    onClickLoadMore : function(){
-      this.requestProblem(true).then(() => {
+    onClickLoadMore () {
+      this.addMyProblem(this.$refs.problemFilter.queryParams).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.$refs.listView.addScrollHandler()
+        this.updateImg()
       })
-    }
-  },
-  data () {
-    return {
-      oldQueryParams : {}
+    },
+    onClickSure () {
+      this.clearMyProblem()
+      this.addMyProblem(this.$refs.problemFilter.queryParams).then(()=>{
+        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+        this.updateImg()
+      })
     }
   }
 }

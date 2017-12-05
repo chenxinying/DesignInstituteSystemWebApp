@@ -14,7 +14,7 @@
 
 <script>
 import { XHeader,Tab, TabItem, Swiper, SwiperItem } from 'vux'
-const list = () => ['待完成', '已完成']
+const list = () => ['统计信息', '节点记录','动态记录']
 export default {
   components: {
     XHeader,

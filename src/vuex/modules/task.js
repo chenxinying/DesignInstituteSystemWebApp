@@ -1,13 +1,14 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import { AjaxPlugin } from 'vux'
+import api from '../../api'
 import * as types from '../mutation-types'
+import { type } from 'os';
 
-Vue.use(Vuex)
-Vue.use(AjaxPlugin)
 
 const state = {
-  scrollTop : 0
+  loadEnd : false,
+  start : 0,
+  taskgroupList : [],
+  taskList : [],
+
 }
 
 const getters = {
@@ -15,15 +16,69 @@ const getters = {
 }
 
 const mutations = {
-  [types.UPDATE_TASK_SCROLLTOP] (state, payload){
-    state.scrollTop = payload.top
-  }
+  [types.ADD_TASK_GROUP_LIST](state, lists){
+    lists.forEach(element => {
+      state.taskgroupList.push(element)
+      state.taskList.push({taskgroup_id: element.id, start : 0, loadEnd: false, data : []})
+    });
+  },
+  [types.UPDATE_TASK_GROUP_START](state, start){
+    state.start = start
+  },
+  [types.UPDATE_TASK_GROUP_LOAD_END] (state, loadEnd){
+    state.loadEnd = loadEnd
+  },
 }
 
 const actions = {
-  updateTaskScrollTop ({commit}, top) {
-    commit({type: types.UPDATE_TASK_SCROLLTOP, top: top})
-  }
+  getTaskgroupList ({commit, state, rootState}, subprj_id) {
+    return new Promise((resolve, reject) => {
+      api.getTaskgroupList({
+        company_id : rootState.user_info.company_id,
+        start : state.start,
+        count : rootState.request_count,
+        subprj_id : subprj_id
+      },
+      lists => {
+        if(lists.length < rootState.request_count)
+          commit(types.UPDATE_TASK_GROUP_LOAD_END, true)
+
+        commit(types.UPDATE_TASK_GROUP_START, state.start + lists.length)
+        commit(types.ADD_TASK_GROUP_LIST, lists)
+        resolve()
+      },
+      lists => {
+        commit(types.UPDATE_TASK_GROUP_LOAD_END, true)
+        resolve()
+      })
+    })
+  },
+  getTaskList ({commit, state, rootState}, taskgroup_id) {
+    return new Promise((resolve, reject) => {
+      var subprojectInfo = state.taskList.find(item => item.taskgroup_id == taskgroup_id)
+      api.getTaskList({
+        taskgoup_id : taskgroup_id,
+        start : subprojectInfo ? subprojectInfo.start : 0,
+        count : rootState.request_count
+      },
+      projects => {
+        if(projects.length < rootState.request_count)
+          subprojectInfo.loadEnd = true
+
+        subprojectInfo.start += projects.length
+
+        projects.forEach(element => {
+          subprojectInfo.data.push(element)
+        });
+        resolve()
+      },
+      projects => {
+        commit(types.UPDATE_TASK_GROUP_LOAD_END, true)
+        resolve()
+      })
+    })
+  },
+
 }
 
 export default {

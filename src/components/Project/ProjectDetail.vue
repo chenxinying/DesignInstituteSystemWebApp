@@ -1,16 +1,14 @@
 <template>
   <div style="height:100%;">
     <div class="search-fix-top">
-      <x-header class="search-fix-top">{{projectName}}</x-header>
+      <x-header>{{projectName}}/</x-header>
     </div>
 
     <div class="search-fix-top" style="top:46px;">
-      <search v-model="keyword" position="absolute" auto-scroll-to-top @on-focus="onFocus" @on-cancel="onCancel" @on-submit="onSubmit">
-        <x-button mini slot="right" v-show="!isFocus" @click.native="showFilter=true">筛选</x-button>
-      </search>
+      <project-filter :filter-project-id="$route.params.id"></project-filter>
     </div>
 
-    <list-view header="项目列表" :list="subprojects" type="1" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="margin-top:91px;"></list-view>
+    <list-view header="项目列表" :list="subprojects" type="1" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:90px;"></list-view>
 
   </div>
 </template>
@@ -19,6 +17,8 @@
 import { XHeader, Search, XButton } from 'vux'
 import { mapState, mapActions } from 'vuex'
 import ListView from '../ListView'
+import ProjectFilter from '../Project/ProjectFilter'
+
 const Holder = require('holderjs');
 
 export default {
@@ -26,7 +26,8 @@ export default {
     XHeader,
     Search,
     XButton,
-    ListView
+    ListView,
+    ProjectFilter
   },
   methods: {
     ...mapActions([
@@ -40,7 +41,7 @@ export default {
             images: element
           });
         })
-      }, 500)
+      }, 0)
     },
     onSubmit () {
       this.onClickSure()
@@ -51,13 +52,13 @@ export default {
     onCancel () {
       this.isFocus = false;
     },
-    onScrollEnd : function(){
+    onScrollEnd () {
       this.getSubProjectList(this.$route.params.id).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.updateImg()
       })
     },
-    onClickLoadMore : function(){
+    onClickLoadMore () {
       this.getSubProjectList(this.$route.params.id).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.$refs.listView.addScrollHandler()

@@ -3,7 +3,7 @@
     <div class="search-fix-top">
       <search v-model="keyword" auto-scroll-to-top @on-submit="onSubmit"></search>
     </div>
-    <list-view header="模板厂列表" :list="projects" type="1" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:45px;"></list-view>
+    <list-view header="模板厂家列表" :list="projects" type="1" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:44px;"></list-view>
   </div>
 </template>
 
@@ -30,18 +30,18 @@ export default {
             images: element
           });
         })
-      }, 500)
+      }, 0)
     },
     onSubmit () {
       console.log("执行搜索")
     },
-    onScrollEnd : function(){
+    onScrollEnd () {
       this.getProjectList().then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.updateImg()
       })
     },
-    onClickLoadMore : function(){
+    onClickLoadMore () {
       this.getProjectList().then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.$refs.listView.addScrollHandler()

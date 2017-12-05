@@ -15,9 +15,9 @@
       <popup v-model="showFilter" position="right">
         <div style="width:220px;">
 
-          <group title="项目筛选">
-            <selector title="模板厂" :options="projectNames" v-model="projectId" value-align="left" @on-change="onProjectChange"></selector>
-            <selector title="子项目" :options="subprojectNames" v-model="subprojectId" value-align="left"></selector>
+          <group title="项目筛选" v-show="filterProjectId==-1 && filterSubprojectId==-1">
+            <selector title="模板厂家" :options="projectNames" v-model="projectId" value-align="left" @on-change="onProjectChange"></selector>
+            <selector title="项目名称" :options="subprojectNames" v-model="subprojectId" value-align="left"></selector>
           </group>
 
           <group title="问题筛选">
@@ -60,20 +60,23 @@ export default {
     Group, Selector, Search, XButton, TransferDom, Popup, Flexbox, FlexboxItem
   },
   props: {
+    filterProjectId : {
+      default : -1
+    },
+    filterSubprojectId : {
+      default : -1
+    },
     filterChargerId : {
       default: -1
     },
     filterState : {
       default: -1
     },
-    isMyProblem : {
-      default : false
-    }
   },
   data () {
     return {
-      projectId: -1,
-      subprojectId: -1,
+      projectId: this.filterProjectId,
+      subprojectId: this.filterSubprojectId,
       level: '全部',
       creatorId : -1,
       chargerId : this.filterChargerId,
@@ -109,23 +112,10 @@ export default {
   },
   methods : {
      ...mapActions([
-      'requestProblem',
       'getProjectNames',
       'updateSubProjectNames',
       'getProblemUserNames',
-      'clearProblem',
-      'updateProblemQueryParams'
     ]),
-    updateImg () {
-      setTimeout(()=>{
-        var myImage = document.querySelectorAll('.weui-media-box__thumb');
-        myImage.forEach(element => {
-          Holder.run({
-            images: element
-          });
-        })
-      }, 500)
-    },
     onSubmit () {
       this.onClickSure()
     },
@@ -137,11 +127,7 @@ export default {
     },
     onClickSure () {
       //进行筛选
-      this.clearProblem(this.isMyProblem)
-      this.updateProblemQueryParams(this.queryParams)
-      this.requestProblem(this.isMyProblem).then(()=>{
-        this.updateImg()
-      })
+      this.$emit('on-click-sure')
       this.showFilter = false
     },
     onProjectChange (projectId) {
@@ -153,12 +139,12 @@ export default {
   },
   computed: {
     ...mapState({
-      projectNames : state => state.problem.projectNames,
-      subprojectNames : state => state.problem.subprojectNames,
+      projectNames : state => state.project.projectNames,
+      subprojectNames : state => state.project.subprojectNames,
       chargerNames: state => state.problem.chargerNames,
       creatorNames: state => state.problem.creatorNames,
     }),
-    queryParams : function(){
+    queryParams () {
       var queryParams = {}
       if(this.projectId != -1)
         queryParams.project_id = this.projectId
@@ -191,23 +177,28 @@ export default {
     }
   },
   created () {
-    this.getProjectNames()
+    this.getProjectNames(this.filterChargerId != -1)
     this.getProblemUserNames()
   },
   activated () {
+
+    if(this.filterProjectId != -1)
+      this.projectId = this.filterProjectId
+
+    if(this.filterSubprojectId != -1)
+      this.subprojectId = this.filterSubprojectId
+
+    if(this.chargerId != -1)
+      this.chargerId = this.filterChargerId
+
+    if(this.state != -1)
+      this.state = this.filterState
 
     if(this.projectId == -1)
         this.subprojectId = -1
 
     this.updateSubProjectNames(this.projectId)
 
-    if(this.filterChargerId != -1)
-      this.chargerId = this.filterChargerId
-
-    if(this.filterState != -1)
-      this.state = this.filterState
-
-    this.updateProblemQueryParams(this.queryParams)
   }
 }
 </script>

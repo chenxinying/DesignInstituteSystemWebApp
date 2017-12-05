@@ -19,7 +19,7 @@ export default {
     LoadMore
   },
   methods: {
-    onScroll : function(){
+    onScroll  () {
       var scrollTop = this.$refs.viewBox.getScrollTop()
       var offsetHeight = this.$refs.viewBox.getScrollBody().offsetHeight
       var scrollHeight = this.$refs.viewBox.getScrollBody().scrollHeight
@@ -29,15 +29,15 @@ export default {
         this.$emit('on-scroll-end')
       }
     },
-    onClickLoadMore : function(){
+    onClickLoadMore () {
       this.$refs.viewBox.getScrollBody().removeEventListener('scroll', this.onScroll, false)
       this.isLoadEnd = false
       this.$emit('on-click-load-more')
     },
-    setIsLoadEnd : function(value){
+    setIsLoadEnd (value) {
       this.isLoadEnd = value
     },
-    addScrollHandler : function(){
+    addScrollHandler () {
       this.$refs.viewBox.getScrollBody().addEventListener('scroll', this.onScroll, false)
     },
   },

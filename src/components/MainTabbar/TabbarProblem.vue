@@ -1,7 +1,7 @@
 <template>
   <div style="height:100%;">
     <div class="search-fix-top">
-      <problem-filter></problem-filter>
+      <problem-filter @on-click-sure="onClickSure" ref="problemFilter"></problem-filter>
     </div>
     <list-view header="问题列表" :list="problems" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:45px;"></list-view>
   </div>
@@ -20,7 +20,8 @@ export default {
   },
   methods : {
      ...mapActions([
-      'requestProblem'
+      'addProblem',
+      'clearProblem',
     ]),
     updateImg () {
       setTimeout(()=>{
@@ -30,18 +31,25 @@ export default {
             images: element
           });
         })
-      }, 500)
+      }, 0)
     },
-    onScrollEnd : function(){
-      this.requestProblem().then(() => {
+    onScrollEnd () {
+      this.addProblem(this.$refs.problemFilter.queryParams).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.updateImg()
       })
     },
-    onClickLoadMore : function(){
-      this.requestProblem().then(() => {
+    onClickLoadMore () {
+      this.addProblem(this.$refs.problemFilter.queryParams).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.$refs.listView.addScrollHandler()
+        this.updateImg()
+      })
+    },
+    onClickSure () {
+      this.clearProblem()
+      this.addProblem(this.$refs.problemFilter.queryParams).then(()=>{
+        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.updateImg()
       })
     }
@@ -52,7 +60,7 @@ export default {
           var showList = []
           state.problem.problems.forEach(element => {
 
-            var bgArray = ['','62DC49', '4E6AA9', 'DCDC4A', '00FFFF', 'FF00FF', 'FF0000', '5F70A8']
+            var bgArray = ['','62DC49', '4E6AA9', 'DCDC4A', '00FFFF', 'FF00FF', 'FF0000', 'CFCFCF']
             var text = "&text=" + element.subtype_name
             var bg = "&bg=" + bgArray[element.subtype_id]
 
@@ -76,7 +84,7 @@ export default {
     }),
   },
   created () {
-    this.requestProblem().then(() => {
+    this.addProblem().then(() => {
       this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
       this.updateImg()
     })

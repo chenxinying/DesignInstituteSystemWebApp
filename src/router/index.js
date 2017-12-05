@@ -17,13 +17,16 @@ import MyPersonInfo from '@/components/My/MyPersonInfo'
 //Project
 import ProjectDetail from '@/components/Project/ProjectDetail'
 import SubProjectDetail from '@/components/Project/SubProjectDetail'
+import SubProjectProblem from '@/components/Project/SubProjectProblem'
+import SubProjectTaskgroupList from '@/components/Project/SubProjectTaskgroupList'
+import SubProjectTaskList from '@/components/Project/SubProjectTaskList'
+
 
 //Problem
 import ProblemDetail from '@/components/Problem/ProblemDetail'
 
 //NotInstUser
 import NotInstUser from '@/components/NotInstUser'
-
 
 Vue.use(Router)
 
@@ -68,6 +71,18 @@ export default new Router({
     {
       path: '/project/:project_id/subproject/:subproject_id',
       component : SubProjectDetail
+    },
+    {
+      path: '/project/:project_id/subproject/:subproject_id/problem',
+      component : SubProjectProblem
+    },
+    {
+      path: '/project/:project_id/subproject/:subproject_id/taskgroup',
+      component : SubProjectTaskgroupList
+    },
+    {
+      path: '/project/:project_id/subproject/:subproject_id/taskgroup/:taskgroup_id',
+      component : SubProjectTaskList
     },
     {
       path: '/problem/:id',

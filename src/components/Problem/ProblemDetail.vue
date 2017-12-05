@@ -64,13 +64,11 @@ export default {
         return realProblems && realProblems.find(item => item.id == state.route.params.id)
       }
     }),
-
-    list : function(){
+    list () {
       var list = []
       this.problem_info.file_list.forEach( (value, index, array) => list.push({src: value}))
       return list
     }
-
   },
   data () {
    return {
