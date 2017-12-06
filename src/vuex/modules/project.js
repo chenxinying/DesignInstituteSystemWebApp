@@ -66,6 +66,7 @@ const actions = {
           resolve()
         },
         projects => {
+          console.log("failed")
           commit(types.UPDATE_PROJECT_LOAD_END, true)
           resolve()
         })

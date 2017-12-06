@@ -54,36 +54,27 @@ export default {
   },
   methods: {
     ...mapActions([
-      'addMyProject'
+      'addMyProject',
+      'updateImage'
     ]),
-    updateImg () {
-      setTimeout(()=>{
-        var myImage = document.querySelectorAll('.weui-media-box__thumb');
-        myImage.forEach(element => {
-          Holder.run({
-            images: element
-          });
-        })
-      }, 0)
-    },
     onScrollEnd () {
       this.addMyProject().then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImg()
+        this.updateImage()
       })
     },
     onClickLoadMore () {
       this.addMyProject().then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.$refs.listView.addScrollHandler()
-        this.updateImg()
+        this.updateImage()
       })
     }
   },
   created () {
     this.addMyProject().then(() => {
       this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-      this.updateImg()
+      this.updateImage()
     })
   }
 }

@@ -14,19 +14,26 @@ import MyTask from '@/components/My/MyTask'
 import MyProblem from '@/components/My/MyProblem'
 import MyPersonInfo from '@/components/My/MyPersonInfo'
 
+//My Edit
+import EditRealName from '@/components/My/EditRealName'
+import EditCellPhone from '@/components/My/EditCellPhone'
+
 //Project
 import ProjectDetail from '@/components/Project/ProjectDetail'
 import SubProjectDetail from '@/components/Project/SubProjectDetail'
 import SubProjectProblem from '@/components/Project/SubProjectProblem'
 import SubProjectTaskgroupList from '@/components/Project/SubProjectTaskgroupList'
 import SubProjectTaskList from '@/components/Project/SubProjectTaskList'
-
+import SubProjectTaskDetail from '@/components/Project/SubProjectTaskDetail'
 
 //Problem
 import ProblemDetail from '@/components/Problem/ProblemDetail'
 
 //NotInstUser
 import NotInstUser from '@/components/NotInstUser'
+
+
+
 
 Vue.use(Router)
 
@@ -85,6 +92,10 @@ export default new Router({
       component : SubProjectTaskList
     },
     {
+      path: '/project/:project_id/subproject/:subproject_id/taskgroup/:taskgroup_id/task/:task_id',
+      component : SubProjectTaskDetail
+    },
+    {
       path: '/problem/:id',
       component : ProblemDetail
     },
@@ -101,8 +112,16 @@ export default new Router({
       component: MyTask
     },
     {
-      path: '/mypersoninfo',
+      path: '/personinfo',
       component: MyPersonInfo
-    }
+    },
+    {
+      path: '/personinfo/edit/name',
+      component: EditRealName
+    },
+    {
+      path: '/personinfo/edit/phone',
+      component: EditCellPhone
+    },
   ]
 })

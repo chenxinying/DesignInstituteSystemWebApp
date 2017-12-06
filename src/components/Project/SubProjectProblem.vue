@@ -75,7 +75,7 @@ export default {
     var query = {project_id : this.$route.params.project_id, subproject_id : this.$route.params.subproject_id}
     this.addProjectProblem(query).then(() => {
       this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-      this.updateImg()
+      this.updateImage()
     })
   },
   activated () {
@@ -88,35 +88,26 @@ export default {
      ...mapActions([
       'addProjectProblem',
       'clearProjectProblem',
+      'updateImage'
     ]),
-    updateImg () {
-      setTimeout(()=>{
-        var myImage = document.querySelectorAll('.weui-media-box__thumb');
-        myImage.forEach(element => {
-          Holder.run({
-            images: element
-          });
-        })
-      }, 0)
-    },
     onScrollEnd () {
       this.addProjectProblem(this.$refs.problemFilter.queryParams).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImg()
+        this.updateImage()
       })
     },
     onClickLoadMore () {
       this.addProjectProblem(this.$refs.problemFilter.queryParams).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.$refs.listView.addScrollHandler()
-        this.updateImg()
+        this.updateImage()
       })
     },
     onClickSure () {
       this.clearProjectProblem()
       this.addProjectProblem(this.$refs.problemFilter.queryParams).then(()=>{
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImg()
+        this.updateImage()
       })
     }
   }

@@ -54,7 +54,7 @@ export default {
   created () {
     this.addMyProblem().then(() => {
       this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-      this.updateImg()
+      this.updateImage()
     })
   },
   activated () {
@@ -67,35 +67,26 @@ export default {
      ...mapActions([
       'addMyProblem',
       'clearMyProblem',
+      'updateImage'
     ]),
-    updateImg () {
-      setTimeout(()=>{
-        var myImage = document.querySelectorAll('.weui-media-box__thumb');
-        myImage.forEach(element => {
-          Holder.run({
-            images: element
-          });
-        })
-      }, 0)
-    },
     onScrollEnd () {
       this.addMyProblem(this.$refs.problemFilter.queryParams).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImg()
+        this.updateImage()
       })
     },
     onClickLoadMore () {
       this.addMyProblem(this.$refs.problemFilter.queryParams).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.$refs.listView.addScrollHandler()
-        this.updateImg()
+        this.updateImage()
       })
     },
     onClickSure () {
       this.clearMyProblem()
       this.addMyProblem(this.$refs.problemFilter.queryParams).then(()=>{
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImg()
+        this.updateImage()
       })
     }
   }

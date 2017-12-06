@@ -30,32 +30,23 @@ export default {
   },
   methods: {
      ...mapActions([
-      'getTaskgroupList'
+      'getTaskgroupList',
+      'updateImage'
     ]),
-    updateImg () {
-      setTimeout(()=>{
-        var myImage = document.querySelectorAll('.weui-media-box__thumb');
-        myImage.forEach(element => {
-          Holder.run({
-            images: element
-          });
-        })
-      }, 0)
-    },
     onSubmit () {
       console.log("执行搜索")
     },
     onScrollEnd () {
       this.getTaskgroupList(this.$route.params.subproject_id).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImg()
+        this.updateImage()
       })
     },
     onClickLoadMore () {
       this.getTaskgroupList(this.$route.params.subproject_id).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.$refs.listView.addScrollHandler()
-        this.updateImg()
+        this.updateImage()
       })
     },
   },
@@ -109,7 +100,7 @@ export default {
   created () {
     this.getTaskgroupList(this.$route.params.subproject_id).then(() => {
       this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-      this.updateImg()
+      this.updateImage()
     })
   }
 }

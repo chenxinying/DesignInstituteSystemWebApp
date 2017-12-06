@@ -10,17 +10,24 @@
         <tab-item class="vux-center" :selected="demo === item" v-for="(item, index) in list" @click="demo = item" :key="index">{{item}}</tab-item>
       </tab>
     </div>
-      <swiper v-model="index" height="500px" :show-dots="false" style="padding-top:90px;" ref="swiper">
+      <swiper v-model="index" height="550px" :show-dots="false" style="padding-top:90px;" ref="swiper">
         <swiper-item :key="0">
           <div class="tab-swiper">
-            <group title="时间统计" style="margin-top:-10px;padding-top:10px;">
+            <group title="底图时间" style="margin-top:-10px;padding-top:10px;">
               <cell title="收到底图时间" :value="subproject.start_time_plan" @click.native="onClick"></cell>
               <cell title="出终版底图成果时间" :value="subproject.dwg_end_plan" @click.native="onClick"></cell>
-
+              <cell title="离底图结束还剩">
+                <clocker :time="subproject.dwg_end_plan">
+                  <span style="color:red;">%D 天</span>
+                  <span style="color:green;">%H 小时</span>
+                  <span style="color:blue;">%M 分 %S 秒</span>
+                </clocker>
+              </cell>
+            </group>
+            <group title="设计时间" style="margin-top:-10px;padding-top:10px;">
               <cell title="签字确认底图时间" :value="subproject.design_start_plan" @click.native="onClick"></cell>
               <cell title="项目结束节点时间" :value="subproject.end_time_plan" @click.native="onClick"></cell>
-
-              <cell title="离项目结束还剩">
+              <cell title="离设计结束还剩">
                 <clocker :time="subproject.end_time_plan">
                   <span style="color:red;">%D 天</span>
                   <span style="color:green;">%H 小时</span>
@@ -44,12 +51,12 @@
                   <div class="vux-1px-r">
                     <span>4</span>
                     <br/>
-                    今日已完成
+                    今日完成
                   </div>
                   <div>
                     <span>8</span>
                     <br/>
-                    本周已完成
+                    今日新增
                   </div>
                 </div>
               </card>
@@ -70,12 +77,12 @@
                   <div class="vux-1px-r">
                     <span>4</span>
                     <br/>
-                    今日已解决
+                    今日解决
                   </div>
                   <div>
                     <span>8</span>
                     <br/>
-                    本周已解决
+                    今日新增
                   </div>
                 </div>
               </card>
@@ -194,7 +201,7 @@ export default {
       }else if(key == 'problem'){
         this.$router.push(this.$route.params.subproject_id + "/problem")
       }
-    },
+    }
   },
   activated () {
     this.getSubprojectFlowState({subproject_id : this.$route.params.subproject_id})
@@ -206,7 +213,7 @@ export default {
         var h = this.$refs.swiper.$children[2].$el.scrollHeight
         this.$refs.swiper.xheight = h + "px"
       }else{
-        this.$refs.swiper.xheight = "500px"
+        this.$refs.swiper.xheight = "550px"
       }
     }
   },
@@ -243,7 +250,10 @@ export default {
           task: '任务列表',
           problem: '问题列表',
         },
+
       showMenus: false,
+      showDraw: false,
+      showDesign: false,
 
       list: ['统计信息', '节点记录','动态记录'],
       demo: '统计信息',

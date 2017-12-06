@@ -1,6 +1,7 @@
 import Vue from 'vue'
-import { AjaxPlugin } from 'vux'
+import { AjaxPlugin, ToastPlugin } from 'vux'
 Vue.use(AjaxPlugin)
+Vue.use(ToastPlugin)
 
 let _request_host = "http://192.168.3.158/DesignInstituteSystem/design_institute/public/"
 
@@ -92,6 +93,7 @@ export default {
         cb(response.data)
       },
       (response) => {
+        Vue.$vux.toast.text('获取模板厂家列表失败')
         errorCb(response.data)
       }
     )

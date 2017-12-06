@@ -24,4 +24,14 @@ export default  {
 
     })
   },
+  updateImage({ commit }){
+    setTimeout(() => {
+      var myImage = document.querySelectorAll('.weui-media-box__thumb');
+      for(var i = 0; i < myImage.length; ++i){
+        Holder.run({
+          images: myImage[i]
+        });
+      }
+    }, 0)
+  }
 }

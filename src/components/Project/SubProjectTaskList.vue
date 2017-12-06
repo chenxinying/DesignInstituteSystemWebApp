@@ -2,14 +2,14 @@
   <div style="height:100%;">
 
     <div class="search-fix-top">
-      <x-header>{{projectName}}/{{subproject.name}}/{{taskgroupName}}/</x-header>
+      <x-header>.../{{subproject.name}}/{{taskgroupName}}/</x-header>
     </div>
 
     <div class="search-fix-top" style="top:46px;">
       <search v-model="keyword" auto-scroll-to-top @on-submit="onSubmit"></search>
     </div>
 
-    <list-view header="任务列表" :list="lists" type="1" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:90px;"></list-view>
+    <list-view header="任务列表" :list="lists" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:90px;"></list-view>
   </div>
 </template>
 
@@ -27,32 +27,23 @@ export default {
   },
   methods: {
      ...mapActions([
-      'getTaskList'
+      'getTaskList',
+      'updateImage'
     ]),
-    updateImg () {
-      setTimeout(()=>{
-        var myImage = document.querySelectorAll('.weui-media-box__thumb');
-        myImage.forEach(element => {
-          Holder.run({
-            images: element
-          });
-        })
-      }, 0)
-    },
     onSubmit () {
       console.log("执行搜索")
     },
     onScrollEnd () {
       this.getTaskList(this.$route.params.taskgroup_id).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImg()
+        this.updateImage()
       })
     },
     onClickLoadMore () {
       this.getTaskList(this.$route.params.taskgroup_id).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.$refs.listView.addScrollHandler()
-        this.updateImg()
+        this.updateImage()
       })
     },
   },
@@ -67,14 +58,30 @@ export default {
             var showList = []
             var taskInfo = state.task.taskList.find(item => item.taskgroup_id == state.route.params.taskgroup_id)
             taskInfo && taskInfo.data.forEach(element => {
-              var text = "&text=" + element.name.substring(0, 4)
-              var bgArray = ['F86E61', '4DA9EA', '05CC91', 'F8B65F', '578AA9', '5F70A8']
-              var bgIndex = element.id % bgArray.length
-              var bg = "&bg=" + bgArray[bgIndex]
+              var urgentTextArray =  ["", "普通", "紧急", "非常紧急"]
+              var urgentColorArray = ["", "05CC91", "F8B65F", "F86E61"]
+              var text = "&text=" + urgentTextArray[element.urgent]
+              var bg = "&bg=" + urgentColorArray[element.urgent]
+              var stateArray = ["", "待解决", "待审核", "已解决"]
+
+              //剩余时间
+              var startDate= new Date()
+              var endDate= new Date(element.end_time_plan)
+              var df=(endDate.getTime()-startDate.getTime()) / 1000
+              var secondsPerDay = 24 * 3600
+              var days = Math.floor(df / secondsPerDay)
+              var hours = Math.floor(df % secondsPerDay / 3600)
+              var t = days + "天 " + hours + "小时"
+
               var item = {
                 src : "holder.js/60x60?fg=fff" + text + bg,
                 title : element.name,
-                url : '/project/' + state.route.params.project_id + '/subproject/' + state.route.params.subproject_id + '/taskgroup/' + state.route.params.taskgroup_id,
+                desc : element.changer_nickname + ' ' + stateArray[element.urgent],
+                url : '/project/' + state.route.params.project_id + '/subproject/' + state.route.params.subproject_id + '/taskgroup/' + state.route.params.taskgroup_id + '/task/' + element.id,
+                meta: {
+                  source: "截止： " + element.end_time_plan,
+                  date: "剩余： <span style='color:red;'>" + t + "</span>",
+                }
               }
               showList.push(item)
             });
@@ -111,7 +118,7 @@ export default {
   activated () {
     this.getTaskList(this.$route.params.taskgroup_id).then(() => {
       this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-      this.updateImg()
+      this.updateImage()
     })
   }
 }

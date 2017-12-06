@@ -36,21 +36,20 @@ export default {
     }
     else{
       //this.getOpenid({code : code}).then(()=>{
-
       //   window.location.search = ""
       //  if(this.openid == ""){
       //    this.$router.push('/error')
       //    return
       //  }
 
-        //获取company_id
-        this.getUserInfo().then(()=>{
-          if(this.company_id == -1){
-            this.$router.push('/error')
-          }else{
-            this.$router.push('/project')
-          }
-        })
+      //获取company_id
+      this.getUserInfo().then(()=>{
+        if(this.company_id == -1){
+          this.$router.push('/error')
+        }else{
+          this.$router.push('/project')
+        }
+      })
 
     //})
     }

@@ -20,32 +20,23 @@ export default {
   },
   methods: {
      ...mapActions([
-      'getProjectList'
+      'getProjectList',
+      'updateImage'
     ]),
-    updateImg () {
-      setTimeout(()=>{
-        var myImage = document.querySelectorAll('.weui-media-box__thumb');
-        myImage.forEach(element => {
-          Holder.run({
-            images: element
-          });
-        })
-      }, 0)
-    },
     onSubmit () {
       console.log("执行搜索")
     },
     onScrollEnd () {
       this.getProjectList().then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImg()
+        this.updateImage()
       })
     },
     onClickLoadMore () {
       this.getProjectList().then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.$refs.listView.addScrollHandler()
-        this.updateImg()
+        this.updateImage()
       })
     },
   },
@@ -80,7 +71,7 @@ export default {
   created () {
     this.getProjectList().then(() => {
       this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-      this.updateImg()
+      this.updateImage()
     })
   }
 }

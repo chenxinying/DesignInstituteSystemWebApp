@@ -31,18 +31,9 @@ export default {
   },
   methods: {
     ...mapActions([
-      'getSubProjectList'
+      'getSubProjectList',
+      'updateImage'
     ]),
-    updateImg () {
-      setTimeout(()=>{
-        var myImage = document.querySelectorAll('.weui-media-box__thumb');
-        myImage.forEach(element => {
-          Holder.run({
-            images: element
-          });
-        })
-      }, 0)
-    },
     onSubmit () {
       this.onClickSure()
     },
@@ -55,21 +46,21 @@ export default {
     onScrollEnd () {
       this.getSubProjectList(this.$route.params.id).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImg()
+        this.updateImage()
       })
     },
     onClickLoadMore () {
       this.getSubProjectList(this.$route.params.id).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.$refs.listView.addScrollHandler()
-        this.updateImg()
+        this.updateImage()
       })
     },
   },
   activated () {
     this.getSubProjectList(this.$route.params.id).then(() => {
       this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-      this.updateImg()
+      this.updateImage()
     })
   },
   computed : {
