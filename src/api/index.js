@@ -175,5 +175,31 @@ export default {
         errorCb(response.data)
       }
     )
-  }
+  },
+  //获取子项目的问题统计信息
+  getSubprojectProblemStatistics(params, cb, errorCb){
+    Vue.http.get(_request_host + 'admin/Problem/ProblemCount',
+    {params}
+    ).then(
+      (response) => {
+        cb(response.data)
+      },
+      (response) => {
+        errorCb(response.data)
+      }
+    )
+  },
+  //获取子项目的任务统计信息
+  getSubprojectTaskStatistics(params, cb, errorCb){
+    Vue.http.get(_request_host + 'admin/Task/TaskCount',
+    {params}
+    ).then(
+      (response) => {
+        cb(response.data)
+      },
+      (response) => {
+        errorCb(response.data)
+      }
+    )
+  },
 }

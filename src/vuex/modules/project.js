@@ -12,6 +12,9 @@ const state = {
 
   subproject_flow_states : [{}],//节点记录
   subproject_time_lines : [],//动态记录
+
+  subproject_problem_statistics : {}, //子项目问题统计
+  subproject_task_statistics : {},    //子项目任务统计
 }
 
 const mutations = {
@@ -47,6 +50,12 @@ const mutations = {
       state.subproject_time_lines.push(element)
     });
   },
+  [types.UPDATE_SUBPROJECT_PROBLEM_STATISTICS] (state, statistics){
+    state.subproject_problem_statistics = statistics
+  },
+  [types.UPDATE_SUBPROJECT_TASK_STATISTICS] (state, statistics){
+    state.subproject_task_statistics = statistics
+  }
 }
 
 const actions = {
@@ -141,6 +150,30 @@ const actions = {
           resolve()
         },
         flowStates => {
+          resolve()
+        })
+      })
+  },
+  getSubprojectProblemStatistics({commit}, param){
+    return new Promise((resolve, reject) => {
+      api.getSubprojectProblemStatistics(param,
+        statistics => {
+          commit(types.UPDATE_SUBPROJECT_PROBLEM_STATISTICS, statistics)
+          resolve()
+        },
+        statistics => {
+          resolve()
+        })
+      })
+  },
+  getSubprojectTaskStatistics({commit}, param){
+    return new Promise((resolve, reject) => {
+      api.getSubprojectTaskStatistics(param,
+        statistics => {
+          commit(types.UPDATE_SUBPROJECT_TASK_STATISTICS, statistics)
+          resolve()
+        },
+        statistics => {
           resolve()
         })
       })

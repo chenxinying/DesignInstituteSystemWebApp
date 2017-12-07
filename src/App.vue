@@ -8,9 +8,15 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import { AlertPlugin, Alert } from 'vux'
 import { mapState, mapActions } from 'vuex'
+Vue.use(AlertPlugin)
 
 export default {
+  components: {
+    Alert
+  },
   computed : {
     ...mapState({
         openid: state => state.openid,

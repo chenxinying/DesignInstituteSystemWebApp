@@ -3,7 +3,7 @@
     <div class="search-fix-top">
       <search v-model="keyword" auto-scroll-to-top @on-submit="onSubmit"></search>
     </div>
-    <list-view header="模板厂家列表" :list="projects" type="1" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:44px;"></list-view>
+    <list-view header="模板厂家列表" :list="projects" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:44px;"></list-view>
   </div>
 </template>
 
@@ -11,7 +11,6 @@
 import { Search } from 'vux'
 import { mapState, mapActions } from 'vuex'
 import ListView from '../ListView'
-const Holder = require('holderjs');
 
 export default {
   components: {
@@ -59,7 +58,12 @@ export default {
               var item = {
                 src : "holder.js/60x60?fg=fff" + text + bg,
                 title : element.name,
+                desc : '项目总数：' + element.subptoject_count,
                 url : '/project/' + element.project_id,
+                meta: {
+                  date: '已归档数：' + element.subptoject_state_count6,
+                  other: '<span style="color:red">正在进行数：'+ (element.subptoject_count - element.subptoject_state_count6) +'</span>'
+                }
               }
               showList.push(item)
             });

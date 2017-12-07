@@ -1,16 +1,26 @@
-<template>
-  <div>
-    <h1>您不是铝模设计院用户，暂时不能使用该系统</h1>
-  </div>
-</template>
-
 <script>
-import { XHeader, Group, Cell } from 'vux'
+import Vue from 'vue'
+import { AlertPlugin, Alert } from 'vux'
+
+Vue.use(AlertPlugin)
+
 export default {
   components: {
-    XHeader,
-    Group,
-    Cell
+    Alert
+  },
+  mounted () {
+    this.$vux.alert.show({
+      title: '抱歉，您不是本设计院用户',
+      content: '将跳转至鈤励官网',
+      onHide () {
+        window.location.href = "http://www.rili-tech.com"
+      }
+    })
+
+    setTimeout(() => {
+        this.$vux.alert.hide()
+        window.location.href = "http://www.rili-tech.com"
+      }, 3000)
   }
 }
 </script>

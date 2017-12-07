@@ -22,6 +22,13 @@ const mutations = {
       state.taskList.push({taskgroup_id: element.id, start : 0, loadEnd: false, data : []})
     });
   },
+  [types.UPDATE_TASK_GROUP_LIST](state, lists){
+    state.taskgroupList = []
+    lists.forEach(element => {
+      state.taskgroupList.push(element)
+      state.taskList.push({taskgroup_id: element.id, start : 0, loadEnd: false, data : []})
+    });
+  },
   [types.UPDATE_TASK_GROUP_START](state, start){
     state.start = start
   },
@@ -78,7 +85,11 @@ const actions = {
       })
     })
   },
-
+  clearTaskgroupList({commit}) {
+    commit(types.UPDATE_TASK_GROUP_LIST, [])
+    commit(types.UPDATE_TASK_GROUP_START, 0)
+    commit(types.UPDATE_TASK_GROUP_LOAD_END, true)
+  }
 }
 
 export default {

@@ -19,8 +19,6 @@ import { mapState, mapActions } from 'vuex'
 import ListView from '../ListView'
 import ProjectFilter from '../Project/ProjectFilter'
 
-const Holder = require('holderjs');
-
 export default {
   components: {
     XHeader,
@@ -73,13 +71,13 @@ export default {
             var str = ["", "已立项，底图待深化", "底图已深化，底图深化待审核", "底图深化已审核，待标准层下单", "标准层已下单,待变化层下单", "变化层已下单，待归档", "项目已归档"]
             var text = "&text=" + element.name.substring(0, 4)
             var bgArray = ['F86E61', '4DA9EA', '05CC91', 'F8B65F', '578AA9', '5F70A8']
-            var bgIndex = element.subproject_id % bgArray.length
+            var bgIndex = element.id % bgArray.length
             var bg = "&bg=" + bgArray[bgIndex]
             var item = {
               src : "holder.js/60x60?fg=fff" + text + bg,
               title : element.name,
               desc : str[element.state],
-              url : '/project/' + element.project_id + '/subproject/' + element.subproject_id,
+              url : '/project/' + element.project_id + '/subproject/' + element.id,
             }
             showList.push(item)
           });
@@ -93,7 +91,7 @@ export default {
         var project = state.project.projectList.find(item => item.project_id == state.route.params.id)
         return project ? project.name : "项目列表"
       }
-    })
+    }),
   },
   data () {
    return {

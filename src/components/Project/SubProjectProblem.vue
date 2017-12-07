@@ -1,7 +1,7 @@
 <template>
   <div style="height:100%;">
     <div class="search-fix-top">
-      <x-header>{{projectName}}/{{subproject.name}}/</x-header>
+      <x-header>{{projectName}}/{{subprojectName}}/</x-header>
     </div>
     <div class="search-fix-top" style="top:46px;">
       <problem-filter :filter-project-id="$route.params.project_id" :filter-subproject-id="$route.params.subproject_id"  @on-click-sure="onClickSure" ref="problemFilter"></problem-filter>
@@ -48,41 +48,29 @@ export default {
         return showList
       },
       isLoadEnd : state => state.problem_project.loadEnd,
-      projectName : state => {
-        var project = state.project.projectList.find(item => item.project_id == state.route.params.project_id)
-        if(project) return project.name;
-        project = state.project.myProjectList.find(item => item.subproject_id == state.route.params.subproject_id)
-        if(project) return project.projet_name;
-        return ""
-      },
-      subproject : state => {
-        var subproject;
-        var project = state.project.subprojectList.find(item => item.project_id == state.route.params.project_id)
-        if(project){
-          subproject = project.data.find(item => item.subproject_id == state.route.params.subproject_id)
-        }
-        if(!subproject){
-          subproject = state.project_my.projects.find(item => item.subproject_id == state.route.params.subproject_id)
-        }
-        if(!subproject){
-          //发送请求
-        }
-        return subproject
-      },
+      projectList : state => state.project.projectList,
+      subprojectList : state =>  state.project.subprojectList,
+      myProjects : state => state.project_my.projects,
     }),
   },
-  created () {
+  activated () {
+    this.initHeaderNames()
+    this.clearProjectProblem()
     var query = {project_id : this.$route.params.project_id, subproject_id : this.$route.params.subproject_id}
     this.addProjectProblem(query).then(() => {
       this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
       this.updateImage()
     })
-  },
-  activated () {
     //this.updateProblemQueryParams({project_id : this.$route.params.project_id, subproject_id : this.$route.params.subproject_id})
   },
   deactivated () {
     //this.updateProblemQueryParams(this.oldQueryParams)
+  },
+  data () {
+    return {
+      projectName: '',
+      subprojectName: ''
+    }
   },
   methods : {
      ...mapActions([
@@ -109,6 +97,20 @@ export default {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.updateImage()
       })
+    },
+    initHeaderNames () {
+      var project = this.projectList.find(item => item.project_id == this.$route.params.project_id)
+      this.projectName = project ? project.name : "模板厂家"
+
+      var subproject;
+      var project = this.subprojectList.find(item => item.project_id == this.$route.params.project_id)
+      if(project){
+        subproject = project.data.find(item => item.id == this.$route.params.subproject_id)
+      }
+      if(!subproject){
+        subproject = this.myProjects.find(item => item.id == this.$route.params.subproject_id)
+      }
+      this.subprojectName = subproject ?subproject.name : "项目"
     }
   }
 }

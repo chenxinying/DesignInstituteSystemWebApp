@@ -2,11 +2,11 @@
   <div style="height:100%;">
 
     <div class="search-fix-top">
-      <x-header>{{projectName}}/{{subproject.name}}/</x-header>
+      <x-header>{{projectName}}/{{subprojectName}}/</x-header>
     </div>
 
     <div class="search-fix-top" style="top:46px;">
-      <search v-model="keyword" auto-scroll-to-top @on-submit="onSubmit"></search>
+      <search v-model="keyword" auto-scroll-to-top @on-submit="onSubmit" position="absolute"></search>
     </div>
 
     <list-view header="任务组列表" :list="lists" type="1" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="margin-top:90px;"></list-view>
@@ -18,7 +18,6 @@
 import { Search, XHeader, Card, Group } from 'vux'
 import { mapState, mapActions } from 'vuex'
 import ListView from '../ListView'
-const Holder = require('holderjs');
 
 export default {
   components: {
@@ -31,6 +30,7 @@ export default {
   methods: {
      ...mapActions([
       'getTaskgroupList',
+      'clearTaskgroupList',
       'updateImage'
     ]),
     onSubmit () {
@@ -49,10 +49,26 @@ export default {
         this.updateImage()
       })
     },
+    initHeaderNames () {
+      var project = this.projectList.find(item => item.project_id == this.$route.params.project_id)
+      this.projectName = project ? project.name : "模板厂家"
+
+      var subproject;
+      var project = this.subprojectList.find(item => item.project_id == this.$route.params.project_id)
+      if(project){
+        subproject = project.data.find(item => item.id == this.$route.params.subproject_id)
+      }
+      if(!subproject){
+        subproject = this.myProjects.find(item => item.id == this.$route.params.subproject_id)
+      }
+      this.subprojectName = subproject ?subproject.name : "项目"
+    }
   },
   data () {
     return {
-      keyword: ''
+      keyword: '',
+      projectName: '',
+      subprojectName: ''
     }
   },
   computed: {
@@ -69,6 +85,7 @@ export default {
 
               var item = {
                 src : "holder.js/60x60?fg=fff" + text + bg,
+                desc : "任务总数：" + element.task_count + " | <span style='color:red;'>待完成任务：" + element.task_count_incomplete + "</span>",
                 title : element.name,
                 url : '/project/' + state.route.params.project_id + '/subproject/' + state.route.params.subproject_id + '/taskgroup/' + element.id,
               }
@@ -77,27 +94,14 @@ export default {
             return showList
           },
         isLoadEnd : state => state.task.loadEnd,
-        projectName : state => {
-          var project = state.project.projectList.find(item => item.project_id == state.route.params.project_id)
-          return project ? project.name : "项目列表"
-        },
-        subproject : state => {
-          var subproject;
-          var project = state.project.subprojectList.find(item => item.project_id == state.route.params.project_id)
-          if(project){
-            subproject = project.data.find(item => item.subproject_id == state.route.params.subproject_id)
-          }
-          if(!subproject){
-            subproject = state.project_my.projects.find(item => item.subproject_id == state.route.params.subproject_id)
-          }
-          if(!subproject){
-            //发送请求
-          }
-          return subproject
-        },
+        projectList : state => state.project.projectList,
+        subprojectList : state =>  state.project.subprojectList,
+        myProjects : state => state.project_my.projects,
       }),
   },
-  created () {
+  activated () {
+    this.initHeaderNames()
+    this.clearTaskgroupList()
     this.getTaskgroupList(this.$route.params.subproject_id).then(() => {
       this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
       this.updateImage()

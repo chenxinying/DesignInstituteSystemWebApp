@@ -45,11 +45,13 @@
       <cell title="我参与的项目" is-link link="/myproject">
         <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/tabbar/tabbar-project.png">
       </cell>
-      <cell title="我负责的任务" is-link link="/mytask">
+      <cell is-link link="/mytask">
         <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/tabbar/tabbar-task.png">
+        <span slot="after-title"><span style="vertical-align:middle;">待完成的任务</span><badge text="1" style="margin-bottom:15px;"></badge></span>
       </cell>
-      <cell title="待解决的问题" is-link link="/myproblem">
+      <cell is-link link="/myproblem">
         <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/tabbar/tabbar-problem.png">
+        <span slot="after-title"><span style="vertical-align:middle;">待解决的问题</span><badge text="1" style="margin-bottom:15px;"></badge></span>
       </cell>
     </group>
 
@@ -63,13 +65,13 @@
 </template>
 
 <script>
-import { Card, Group, Cell, Flexbox, FlexboxItem } from 'vux'
+import { Card, Group, Cell, Flexbox, FlexboxItem, Badge  } from 'vux'
 import Tabbar from './Tabbar'
 import { mapState, mapActions } from 'vuex'
 
 export default {
   components: {
-    Card, Group, Cell, Flexbox, FlexboxItem, Tabbar
+    Card, Group, Cell, Flexbox, FlexboxItem, Tabbar, Badge
   },
   computed: {
     ...mapState({

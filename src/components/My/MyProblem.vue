@@ -1,7 +1,7 @@
 <template>
   <div style="height:100%;">
     <div class="search-fix-top">
-      <x-header>我待解决的问题</x-header>
+      <x-header>待解决的问题</x-header>
     </div>
     <div class="search-fix-top" style="top:46px;">
       <problem-filter :filter-charger-id="openid" filter-state="1" @on-click-sure="onClickSure" ref="problemFilter"></problem-filter>

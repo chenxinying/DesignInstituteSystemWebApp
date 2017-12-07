@@ -10,7 +10,7 @@
         <tab-item class="vux-center" :selected="demo === item" v-for="(item, index) in list" @click="demo = item" :key="index">{{item}}</tab-item>
       </tab>
     </div>
-      <swiper v-model="index" height="550px" :show-dots="false" style="padding-top:90px;" ref="swiper">
+      <swiper v-model="index" height="650px" :show-dots="false" style="padding-top:90px;" ref="swiper">
         <swiper-item :key="0">
           <div class="tab-swiper">
             <group title="底图时间" style="margin-top:-10px;padding-top:10px;">
@@ -39,48 +39,75 @@
               <card>
                 <div slot="content" class="card-demo-flex card-demo-content01">
                   <div class="vux-1px-r">
-                    <span>55</span>
+                    <span>{{task_statistics.TaskCount}}</span>
                     <br/>
                     总任务数
                   </div>
                   <div class="vux-1px-r">
-                    <span>15</span>
+                    <span>{{task_statistics.TaskFinish}}</span>
                     <br/>
                     已完成数
                   </div>
                   <div class="vux-1px-r">
-                    <span>4</span>
+                    <span>{{task_statistics.TodayCountTasklist}}</span>
                     <br/>
                     今日完成
                   </div>
                   <div>
-                    <span>8</span>
+                    <span>{{task_statistics.addTodayCountTasklist}}</span>
                     <br/>
                     今日新增
                   </div>
                 </div>
               </card>
             </group>
+            <group title="人员统计">
+              <card>
+                <div slot="content" class="card-demo-flex card-demo-content01">
+                  <div class="vux-1px-r">
+                    <span>5</span>
+                    <br/>
+                    参与人数
+                  </div>
+                  <div class="vux-1px-r">
+                    <span>8</span>
+                    <br/>
+                    人均任务
+                  </div>
+                  <div class="vux-1px-r">
+                    <span>2</span>
+                    <br/>
+                    今日人均完成
+                  </div>
+                  <div>
+                    <span>{{problem_statistics.addTodayCountProblemlist}}</span>
+                    <br/>
+                    本周人均完成
+                  </div>
+                </div>
+              </card>
+            </group>
+
             <group title="问题统计">
               <card>
                 <div slot="content" class="card-demo-flex card-demo-content01">
                   <div class="vux-1px-r">
-                    <span>55</span>
+                    <span>{{problem_statistics.CountProblem}}</span>
                     <br/>
-                    总问题数
+                    问题总数
                   </div>
                   <div class="vux-1px-r">
-                    <span>15</span>
+                    <span>{{problem_statistics.ProblemFinish}}</span>
                     <br/>
                     已解决数
                   </div>
                   <div class="vux-1px-r">
-                    <span>4</span>
+                    <span>{{problem_statistics.TodayCountProblemlist}}</span>
                     <br/>
                     今日解决
                   </div>
                   <div>
-                    <span>8</span>
+                    <span>{{problem_statistics.addTodayCountProblemlist}}</span>
                     <br/>
                     今日新增
                   </div>
@@ -92,8 +119,7 @@
         </swiper-item>
         <swiper-item :key="1">
           <div class="tab-swiper">
-            <group title="项目节点记录" style="margin-top:-10px;padding-top:10px;">
-              <div class="weui-wepay-flow weui-wepay-flow_vertical" style="height: 350px;padding:40px;margin-left:60px;">
+              <div class="weui-wepay-flow weui-wepay-flow_vertical" style="height: 400px;padding:40px;margin-left:60px;">
                 <div class="weui-wepay-flow__bd">
 
                   <div class="weui-wepay-flow__li weui-wepay-flow__li_done">
@@ -156,10 +182,8 @@
                     <p class="weui-wepay-flow__title-left" v-if="flow_states[6]"><img :src="flow_states[6].headimgurl" class="flow-img"> {{flow_states[6].time}}</p>
                     <p class="weui-wepay-flow__title-right">项目已归档</p>
                   </div>
-
                 </div>
               </div>
-            </group>
           </div>
         </swiper-item>
         <swiper-item :key="2">
@@ -194,7 +218,7 @@ export default {
     XHeader, Group, Cell, Flow, FlowState, FlowLine, Clocker, Actionsheet ,Tab, TabItem, Swiper, SwiperItem, Card, Timeline, TimelineItem
   },
   methods: {
-    ...mapActions(['getSubprojectFlowState', 'getProjectTrailInfo']),
+    ...mapActions(['getSubprojectFlowState', 'getProjectTrailInfo', 'getSubprojectProblemStatistics', 'getSubprojectTaskStatistics']),
     click (key) {
       if(key == 'task'){
         this.$router.push(this.$route.params.subproject_id + "/taskgroup")
@@ -206,14 +230,18 @@ export default {
   activated () {
     this.getSubprojectFlowState({subproject_id : this.$route.params.subproject_id})
     this.getProjectTrailInfo({prj_id : this.$route.params.project_id, subproject_id : this.$route.params.subproject_id})
+    this.getSubprojectProblemStatistics({subproject_id : this.$route.params.subproject_id})
+    this.getSubprojectTaskStatistics({subproject_id : this.$route.params.subproject_id})
   },
   watch: {
     index: function (newIndex) {
       if(newIndex == 2){
         var h = this.$refs.swiper.$children[2].$el.scrollHeight
         this.$refs.swiper.xheight = h + "px"
+      }else if(newIndex == 0){
+        this.$refs.swiper.xheight = "650px"
       }else{
-        this.$refs.swiper.xheight = "550px"
+        this.$refs.swiper.xheight = "600px"
       }
     }
   },
@@ -223,25 +251,24 @@ export default {
           var subproject;
           var project = state.project.subprojectList.find(item => item.project_id == state.route.params.project_id)
           if(project){
-            subproject = project.data.find(item => item.subproject_id == state.route.params.subproject_id)
+            subproject = project.data.find(item => item.id == state.route.params.subproject_id)
           }
           if(!subproject){
-            subproject = state.project_my.projects.find(item => item.subproject_id == state.route.params.subproject_id)
-          }
-          if(!subproject){
-            //发送请求
+            subproject = state.project_my.projects.find(item => item.id == state.route.params.subproject_id)
           }
           return subproject
       },
       projectName : state => {
         var project = state.project.projectList.find(item => item.project_id == state.route.params.project_id)
         if(project) return project.name;
-        project = state.project_my.projects.find(item => item.subproject_id == state.route.params.subproject_id)
+        project = state.project_my.projects.find(item => item.id == state.route.params.subproject_id)
         if(project) return project.projet_name;
         return ""
       },
       flow_states : state => state.project.subproject_flow_states,
-      time_lines : state => state.project.subproject_time_lines
+      time_lines : state => state.project.subproject_time_lines,
+      problem_statistics : state => state.project.subproject_problem_statistics,
+      task_statistics : state => state.project.subproject_task_statistics
     })
   },
   data () {

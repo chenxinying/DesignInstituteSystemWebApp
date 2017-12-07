@@ -1,6 +1,6 @@
 <template>
   <div>
-    <x-header class="search-fix-top">我的任务</x-header>
+    <x-header class="search-fix-top">待完成的任务</x-header>
       <tab :line-width=2 active-color='#20b907' v-model="index" class="tab-fix-top">
         <tab-item class="vux-center" :selected="demo2 === item" v-for="(item, index) in list2" @click="demo2 = item" :key="index">{{item}}</tab-item>
       </tab>

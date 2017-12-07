@@ -11,7 +11,6 @@ const state = {
 
 const mutations = {
   [types.ADD_PROJECT_PROBLEM] (state, problems) {
-    console.log("aaaa")
     problems.forEach(element => state.problems.push(element))
   },
   [types.UPDATE_PROJECT_PROBLEM] (state, problems) {

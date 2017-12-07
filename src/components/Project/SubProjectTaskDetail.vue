@@ -14,22 +14,32 @@
           <div><span v-bind:class="{'ur-green':task.urgent==1, 'ur-yellow':task.urgent==2, 'ur-red':task.urgent==3}">{{urgentTextArray[task.urgent]}}</span></div>
         </cell>
         <cell title="负责人员">
-          <div><span><img :src="task.changer_headimgurl" class="flow-img"> {{task.changer_nickname}}</span></div>
+          <div>
+            <span v-if="task.changer_nickname!=''">
+              <img :src="task.changer_headimgurl" class="flow-img"> {{task.changer_nickname}}
+            </span>
+            <span v-else>
+              暂未指派
+            </span>
+          </div>
         </cell>
         <cell title="截止时间" :value="task.end_time_plan"></cell>
         <cell title="剩余时间">
-          <clocker :time="task.end_time_plan">
+          <clocker :time="clockerTime">
             <span style="color:red;">%D 天</span>
             <span style="color:green;">%H 小时</span>
             <span style="color:blue;">%M 分 %S 秒</span>
           </clocker>
         </cell>
-        <cell title="参与人员" value-align="left">
+        <cell title="参与人员" value-align="left" v-if="task.parter_list > 0">
             <div style="padding-left:10px;">
               <flexbox :gutter="0" wrap="wrap">
                 <flexbox-item v-for="(item, index) in task.parter_list" :key="index" :span="1/3"><img :src="item.headimgurl" class="flow-img"> {{item.nickname}}</flexbox-item>
               </flexbox>
             </div>
+        </cell>
+        <cell title="参与人员" v-else>
+          暂未指派
         </cell>
         <cell title="备注" :value="task.remarks"></cell>
       </group>
@@ -53,32 +63,35 @@ export default {
     FlexboxItem
   },
   methods: {
+    initHeaderNames(){
+      this.taskgroupName = this.taskgroupList.find(item => item.id == this.$route.params.taskgroup_id).name
+      var taskInfo = this.taskList.find(item => item.taskgroup_id == this.$route.params.taskgroup_id)
+      if(taskInfo){
+        this.task = taskInfo.data.find(item => item.id == this.$route.params.task_id)
+        this.isLoadEnd = taskInfo.loadEnd
+        this.clockerTime = this.task.end_time_plan
+      }
+    }
   },
   data () {
     return {
       urgentTextArray : ["", "普通", "紧急", "非常紧急"],
-      stateArray : ["", "待解决", "待审核", "已解决"]
+      stateArray : ["", "待完成", "待审核", "已完成"],
+      taskgroupName : "",
+      task: {},
+      isLoadEnd : false,
+      clockerTime : '2008-8-8'
     }
   },
   computed: {
     ...mapState({
-        task: state => {
-            var taskDetail;
-            var taskInfo = state.task.taskList.find(item => item.taskgroup_id == state.route.params.taskgroup_id)
-            if(taskInfo)
-              taskDetail = taskInfo.data.find(item => item.id == state.route.params.task_id)
-            return taskDetail
-          },
-        isLoadEnd : state =>  {
-          var taskInfo = state.task.taskList.find(item => item.taskgroup_id == state.route.params.taskgroup_id)
-          return taskInfo ? taskInfo.loadEnd : false
-        },
-        taskgroupName : state => {
-          var taskInfo = state.task.taskgroupList.find(item => item.id == state.route.params.taskgroup_id)
-          return taskInfo.name
-        }
+        taskList: state => state.task.taskList,
+        taskgroupList : state => state.task.taskgroupList
       }),
   },
+  activated () {
+    this.initHeaderNames()
+  }
 }
 </script>
 

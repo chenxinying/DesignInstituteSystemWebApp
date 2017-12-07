@@ -3,10 +3,10 @@
   <div>
     <search
     v-model="keyword"
-    auto-scroll-to-top
     @on-focus="onFocus"
     @on-cancel="onCancel"
     @on-submit="onSubmit"
+    position="absolute"
     ref="search">
     <x-button mini slot="right" v-show="!isFocus" @click.native="showFilter=true">筛选</x-button>
     </search>
@@ -92,7 +92,7 @@ export default {
       if(projectId == -1)
         this.subprojectId = -1
 
-      this.updateSubProjectNames(projectId)
+      //this.updateSubProjectNames(projectId)
     }
   },
   computed: {
@@ -119,16 +119,16 @@ export default {
   },
   activated () {
 
-    this.getProjectNames(this.isMyProject)
+    //this.getProjectNames(this.isMyProject)
 
-    if(this.projectId == -1)
-      this.subprojectId = -1
+    //if(this.projectId == -1)
+    //  this.subprojectId = -1
 
-    this.updateSubProjectNames(this.projectId)
+    //this.updateSubProjectNames(this.projectId)
 
   },
   deactivated () {
-    this.getProjectNames()
+    //this.getProjectNames()
   }
 }
 </script>
