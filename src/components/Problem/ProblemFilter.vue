@@ -72,6 +72,9 @@ export default {
     filterState : {
       default: -1
     },
+    source : {
+      default : 'total'
+    }
   },
   data () {
     return {
@@ -124,6 +127,10 @@ export default {
     },
     onCancel () {
       this.isFocus = false;
+      if(this.keyword != ''){
+        this.keyword = ''
+        this.onClickSure()
+      }
     },
     onClickSure () {
       //进行筛选
@@ -182,23 +189,26 @@ export default {
   },
   activated () {
 
-    if(this.filterProjectId != -1)
-      this.projectId = this.filterProjectId
-
-    if(this.filterSubprojectId != -1)
-      this.subprojectId = this.filterSubprojectId
-
-    if(this.chargerId != -1)
-      this.chargerId = this.filterChargerId
-
-    if(this.state != -1)
-      this.state = this.filterState
+    if(this.source == 'my'){
+      this.$refs.search.cancel()
+      this.projectId = -1
+      this.subprojectId = -1
+      this.region = -1
+      this.step = -1
+      this.creatorId = -1
+      this.level = '全部'
+    }else if(this.source == 'project'){
+      this.$refs.search.cancel()
+      this.region = -1
+      this.step = -1
+      this.creatorId = -1
+      this.chargerId = -1
+      this.level = '全部'
+    }
 
     if(this.projectId == -1)
         this.subprojectId = -1
-
     this.updateSubProjectNames(this.projectId)
-
   }
 }
 </script>

@@ -19,15 +19,22 @@ const mutations = {
   [types.UPDATE_MY_PROJECT_LOAD_END] (state, loadEnd){
     state.loadEnd = loadEnd
   },
+  [types.UPDATE_MY_PROJECT_LIST] (state, projects){
+    state.projects = []
+    projects.forEach(element => {
+      state.projects.push(element)
+    });
+  }
 }
 
 const actions = {
-  addMyProject ({commit, state, rootState}){
+  addMyProject ({commit, state, rootState}, queryParams){
     return new Promise((resolve, reject) => {
       api.getMySubProjects({
         openid: rootState.openid,
         start : state.start,
-        count : rootState.request_count
+        count : rootState.request_count,
+        ...queryParams
       },
       projects => {
         if(projects.length < rootState.request_count)
@@ -44,6 +51,11 @@ const actions = {
 
     })
   },
+  clearMyProject ({commit}){
+    commit(types.UPDATE_MY_PROJECT_LOAD_END, false)
+    commit(types.UPDATE_MY_PROJECT_START, 0)
+    commit(types.UPDATE_MY_PROJECT_LIST, [])
+  }
 }
 
 export default {

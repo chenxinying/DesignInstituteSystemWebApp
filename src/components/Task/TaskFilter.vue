@@ -1,37 +1,22 @@
 <template>
-
-  <div class="search-fix-top">
-
+  <div>
     <search
-    :results="results"
-    v-model="value"
-    auto-scroll-to-top
+    v-model="keyword"
+    position="absolute"
     @on-focus="onFocus"
     @on-cancel="onCancel"
     @on-submit="onSubmit"
+    :placeholder="placeholder"
     ref="search">
     <x-button mini slot="right" v-show="!isFocus" @click.native="showFilter=true">筛选</x-button>
     </search>
-
     <div v-transfer-dom>
       <popup v-model="showFilter" position="right">
         <div style="width:220px;">
-
-          <group title="项目筛选">
-            <selector title="项目名称" :options="['全部', '项目1', '项目2', '项目3', '项目4']" v-model="project" value-align="left"></selector>
-          </group>
-
           <group title="任务筛选">
-            <selector title="任务分组" :options="['全部', '标准部位配模','标准部位加工图', '标准部位清单','交接部位配模','交接部位加工图', '交接部位清单','底图', '施工图']" v-model="step" value-align="left"></selector>
-            <selector title="任务名称" :options="['全部', '楼板','梁板', '墙板','飘台', '楼梯', '背楞', '其他']" v-model="location" value-align="left"></selector>
-            <selector title="紧急程度" :options="['全部', '普通','紧急', '非常紧急']" v-model="level" value-align="left"></selector>
+            <selector title="任务状态" :options="stateArray" v-model="state" value-align="left"></selector>
+            <selector title="优先级别" :options="urgentArray" v-model="urgent" value-align="left"></selector>
           </group>
-
-          <group title="人员筛选">
-              <selector title="负责人" :options="['全部', '陈新颖','吴丹丹']" v-model="step" value-align="left"></selector>
-              <selector title="参与人" :options="['全部', '陈新颖','吴丹丹']" v-model="step" value-align="left"></selector>
-          </group>
-
           <flexbox style="margin-top:20px;">
             <flexbox-item>
               <x-button type="primary" class="filter-btn" @click.native="showFilter=false">取消</x-button>
@@ -40,12 +25,10 @@
               <x-button type="warn" class="filter-btn" @click.native="onClickSure">确定</x-button>
             </flexbox-item>
           </flexbox>
-
         </div>
       </popup>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -59,32 +42,69 @@ export default {
   },
   data () {
     return {
-      project: '全部',
-      step: '全部',
-      location:'全部',
-      level: '全部',
-      results: [],
-      value: '',
+
+      //任务状态
+      state : -1,
+      stateArray :[
+        {key:-1, value:"全部"},
+        {key:1, value:"待完成"},
+        {key:3, value:"已完成"}],
+
+      //任务优先级别
+      urgent : -1,
+      urgentArray : [
+        {key:-1, value:"全部"},
+        {key:1, value:"普通"},
+        {key:2, value:"紧急"},
+        {key:3, value:"非常紧急"}
+      ],
+
+      keyword: '',
       isFocus: false,
-      showFilter: false
+      showFilter: false,
+
     }
   },
   methods: {
-    setFocus () {
-      this.$refs.search.setFocus()
-    },
     onSubmit () {
+      this.onClickSure()
     },
     onFocus () {
       this.isFocus = true;
     },
     onCancel () {
       this.isFocus = false;
+      if(this.keyword != ''){
+        this.keyword = ''
+        this.onClickSure()
+      }
     },
     onClickSure () {
-      console.log("a");
-      console.log(this.$slots.filter.data)
+      //进行筛选
+      this.$emit('on-click-sure')
+      this.showFilter = false
     }
+  },
+  computed: {
+      queryParams () {
+      var queryParams = {}
+
+      if(this.state != -1)
+        queryParams.state = this.state
+
+      if(this.urgent != -1)
+        queryParams.urgent = this.urgent
+
+      if(this.keyword != '')
+        queryParams.keyword = this.keyword
+
+      return queryParams
+    }
+  },
+  activated () {
+    this.$refs.search.cancel()
+    this.state = -1
+    this.urgent = -1
   }
 }
 </script>

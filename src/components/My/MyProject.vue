@@ -4,7 +4,7 @@
       <x-header>我参与的项目</x-header>
     </div>
     <div class="search-fix-top" style="top:46px;">
-      <project-filter :is-my-project="true"></project-filter>
+      <project-filter @on-click-sure="onClickSure" ref="projectFilter"></project-filter>
     </div>
     <list-view :list="projects" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:91px;"></list-view>
   </div>
@@ -55,26 +55,32 @@ export default {
   methods: {
     ...mapActions([
       'addMyProject',
+      'clearMyProject',
       'updateImage'
     ]),
     onScrollEnd () {
-      this.addMyProject().then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImage()
+      this.addMyProject(this.$refs.projectFilter.queryParams).then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+          this.updateImage()
       })
     },
     onClickLoadMore () {
-      this.addMyProject().then(() => {
+      this.addMyProject(this.$refs.projectFilter.queryParams).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.$refs.listView.addScrollHandler()
         this.updateImage()
       })
+    },
+    onClickSure () {
+      this.clearMyProject()
+      this.onScrollEnd()
     }
   },
-  created () {
+  activated () {
+    this.clearMyProject()
     this.addMyProject().then(() => {
-      this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-      this.updateImage()
+        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+        this.updateImage()
     })
   }
 }

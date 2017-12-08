@@ -24,6 +24,14 @@ const mutations = {
       state.subprojectList.push({project_id: element.project_id, start : 0, loadEnd: false, data : []})
     });
   },
+  [types.UPDATE_PROJECT_LIST] (state, projects){
+    state.projectList = []
+    state.subprojectList = []
+    projects.forEach(element => {
+      state.projectList.push(element)
+      state.subprojectList.push({project_id: element.project_id, start : 0, loadEnd: false, data : []})
+    });
+  },
   [types.UPDATE_PROJECT_START](state, start){
     state.start = start
   },
@@ -59,12 +67,13 @@ const mutations = {
 }
 
 const actions = {
-  getProjectList ({commit, state, rootState}) {
+  getProjectList ({commit, state, rootState}, queryParams) {
     return new Promise((resolve, reject) => {
       api.getProjectList({
         company_id : rootState.user_info.company_id,
         start : state.start,
-        count : rootState.request_count
+        count : rootState.request_count,
+        ...queryParams
       },
         projects => {
           if(projects.length < rootState.request_count)
@@ -75,19 +84,24 @@ const actions = {
           resolve()
         },
         projects => {
-          console.log("failed")
           commit(types.UPDATE_PROJECT_LOAD_END, true)
           resolve()
         })
     })
   },
-  getSubProjectList({commit, state, rootState}, project_id) {
+  clearProjectList({commit}) {
+    commit(types.UPDATE_PROJECT_START, 0)
+    commit(types.UPDATE_PROJECT_LOAD_END, false)
+    commit(types.UPDATE_PROJECT_LIST, [])
+  },
+  getSubProjectList({commit, state, rootState}, queryParams) {
+        var project_id = queryParams.project_id
         return new Promise((resolve, reject) => {
           var subprojectInfo = state.subprojectList.find(item => item.project_id==project_id)
           api.getSubprojectList({
-            project_id : project_id,
             start : subprojectInfo ? subprojectInfo.start : 0,
-            count : rootState.request_count
+            count : rootState.request_count,
+            ...queryParams
           },
           projects => {
             if(projects.length < rootState.request_count) subprojectInfo.loadEnd = true
@@ -104,6 +118,12 @@ const actions = {
             resolve()
           })
         })
+  },
+  clearSubProjectList({commit, state, rootState}, project_id){
+    var subprojectInfo = state.subprojectList.find(item => item.project_id==project_id)
+    subprojectInfo.loadEnd = false
+    subprojectInfo.start = 0
+    subprojectInfo.data = []
   },
   getProjectNames({ commit, state, rootState }, isMyProject){
     api.getProjectNames({

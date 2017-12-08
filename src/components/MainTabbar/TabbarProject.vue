@@ -1,7 +1,7 @@
 <template>
   <div style="height:100%;">
     <div class="search-fix-top">
-      <search v-model="keyword" auto-scroll-to-top @on-submit="onSubmit"></search>
+      <search v-model="keyword" @on-cancel="onCancel" @on-submit="onSubmit"></search>
     </div>
     <list-view header="模板厂家列表" :list="projects" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:44px;"></list-view>
   </div>
@@ -20,19 +20,27 @@ export default {
   methods: {
      ...mapActions([
       'getProjectList',
+      'clearProjectList',
       'updateImage'
     ]),
     onSubmit () {
-      console.log("执行搜索")
+      this.clearProjectList()
+      this.onScrollEnd()
+    },
+    onCancel () {
+      if(this.keyword != ''){
+        this.keyword = ''
+        this.onSubmit()
+      }
     },
     onScrollEnd () {
-      this.getProjectList().then(() => {
+      this.getProjectList({keyword : this.keyword}).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.updateImage()
       })
     },
     onClickLoadMore () {
-      this.getProjectList().then(() => {
+      this.getProjectList({keyword : this.keyword}).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.$refs.listView.addScrollHandler()
         this.updateImage()

@@ -4,7 +4,7 @@
       <x-header>{{projectName}}/{{subprojectName}}/</x-header>
     </div>
     <div class="search-fix-top" style="top:46px;">
-      <problem-filter :filter-project-id="$route.params.project_id" :filter-subproject-id="$route.params.subproject_id"  @on-click-sure="onClickSure" ref="problemFilter"></problem-filter>
+      <problem-filter source="project" :filter-project-id="$route.params.project_id" :filter-subproject-id="$route.params.subproject_id"  @on-click-sure="onClickSure" ref="problemFilter"></problem-filter>
     </div>
     <list-view :list="problems" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:91px;"></list-view>
   </div>
@@ -61,10 +61,6 @@ export default {
       this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
       this.updateImage()
     })
-    //this.updateProblemQueryParams({project_id : this.$route.params.project_id, subproject_id : this.$route.params.subproject_id})
-  },
-  deactivated () {
-    //this.updateProblemQueryParams(this.oldQueryParams)
   },
   data () {
     return {
@@ -93,10 +89,7 @@ export default {
     },
     onClickSure () {
       this.clearProjectProblem()
-      this.addProjectProblem(this.$refs.problemFilter.queryParams).then(()=>{
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImage()
-      })
+      this.onScrollEnd()
     },
     initHeaderNames () {
       var project = this.projectList.find(item => item.project_id == this.$route.params.project_id)
@@ -108,7 +101,7 @@ export default {
         subproject = project.data.find(item => item.id == this.$route.params.subproject_id)
       }
       if(!subproject){
-        subproject = this.myProjects.find(item => item.id == this.$route.params.subproject_id)
+        subproject = this.myProjects.find(item => item.subproject_id == this.$route.params.subproject_id)
       }
       this.subprojectName = subproject ?subproject.name : "项目"
     }

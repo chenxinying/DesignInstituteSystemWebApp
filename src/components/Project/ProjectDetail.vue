@@ -5,7 +5,7 @@
     </div>
 
     <div class="search-fix-top" style="top:46px;">
-      <project-filter :filter-project-id="$route.params.id"></project-filter>
+      <project-filter :filter-project-id="$route.params.id" ref="projectFilter" @on-click-sure="onClickSure"></project-filter>
     </div>
 
     <list-view header="项目列表" :list="subprojects" type="1" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:90px;"></list-view>
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { XHeader, Search, XButton } from 'vux'
+import { XHeader } from 'vux'
 import { mapState, mapActions } from 'vuex'
 import ListView from '../ListView'
 import ProjectFilter from '../Project/ProjectFilter'
@@ -22,33 +22,35 @@ import ProjectFilter from '../Project/ProjectFilter'
 export default {
   components: {
     XHeader,
-    Search,
-    XButton,
     ListView,
     ProjectFilter
   },
   methods: {
     ...mapActions([
       'getSubProjectList',
+      'clearSubProjectList',
       'updateImage'
     ]),
-    onSubmit () {
-      this.onClickSure()
-    },
-    onFocus () {
-      this.isFocus = true;
-    },
-    onCancel () {
-      this.isFocus = false;
+    onClickSure () {
+      this.clearSubProjectList(this.$route.params.id)
+      this.onScrollEnd()
     },
     onScrollEnd () {
-      this.getSubProjectList(this.$route.params.id).then(() => {
+      var queryParams = {
+        project_id : this.$route.params.id,
+        ...this.$refs.projectFilter.queryParams
+      }
+      this.getSubProjectList(queryParams).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.updateImage()
       })
     },
     onClickLoadMore () {
-      this.getSubProjectList(this.$route.params.id).then(() => {
+      var queryParams = {
+        project_id : this.$route.params.id,
+        ...this.$refs.projectFilter.queryParams
+      }
+      this.getSubProjectList(queryParams).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.$refs.listView.addScrollHandler()
         this.updateImage()
@@ -56,10 +58,11 @@ export default {
     },
   },
   activated () {
-    this.getSubProjectList(this.$route.params.id).then(() => {
-      this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-      this.updateImage()
-    })
+    this.clearSubProjectList(this.$route.params.id)
+    var queryParams = {
+      project_id : this.$route.params.id,
+    }
+    this.onScrollEnd()
   },
   computed : {
       ...mapState({
@@ -68,7 +71,7 @@ export default {
           var subprojectInfo = state.project.subprojectList.find(item => item.project_id == state.route.params.id)
 
           subprojectInfo && subprojectInfo.data.forEach(element => {
-            var str = ["", "已立项，底图待深化", "底图已深化，底图深化待审核", "底图深化已审核，待标准层下单", "标准层已下单,待变化层下单", "变化层已下单，待归档", "项目已归档"]
+            var str = ["", "已立项，底图深化中...", "底图已深化，底图深化审核中...", "底图深化已审核，标准层设计中...", "标准层已下单,变化层设计中...", "变化层已下单，项目归档中...", "项目已归档"]
             var text = "&text=" + element.name.substring(0, 4)
             var bgArray = ['F86E61', '4DA9EA', '05CC91', 'F8B65F', '578AA9', '5F70A8']
             var bgIndex = element.id % bgArray.length
@@ -92,12 +95,6 @@ export default {
         return project ? project.name : "项目列表"
       }
     }),
-  },
-  data () {
-   return {
-      keyword: '',
-      isFocus: false,
-    }
   }
 }
 </script>

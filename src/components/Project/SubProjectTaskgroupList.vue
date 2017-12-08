@@ -6,7 +6,7 @@
     </div>
 
     <div class="search-fix-top" style="top:46px;">
-      <search v-model="keyword" auto-scroll-to-top @on-submit="onSubmit" position="absolute"></search>
+      <search v-model="keyword" @on-submit="onSubmit" @on-cancel="onCancel" position="absolute" ref="search"></search>
     </div>
 
     <list-view header="任务组列表" :list="lists" type="1" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="margin-top:90px;"></list-view>
@@ -34,16 +34,31 @@ export default {
       'updateImage'
     ]),
     onSubmit () {
-      console.log("执行搜索")
+      this.clearTaskgroupList()
+      this.onScrollEnd()
+    },
+    onCancel(){
+     if(this.keyword != ''){
+        this.keyword = ''
+        this.onSubmit()
+      }
     },
     onScrollEnd () {
-      this.getTaskgroupList(this.$route.params.subproject_id).then(() => {
+      var queryParams = {
+        subprj_id : this.$route.params.subproject_id,
+        keyword : this.keyword
+      }
+      this.getTaskgroupList(queryParams).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.updateImage()
       })
     },
     onClickLoadMore () {
-      this.getTaskgroupList(this.$route.params.subproject_id).then(() => {
+      var queryParams = {
+        subprj_id : this.$route.params.subproject_id,
+        keyword : this.keyword
+      }
+      this.getTaskgroupList(queryParams).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.$refs.listView.addScrollHandler()
         this.updateImage()
@@ -59,7 +74,7 @@ export default {
         subproject = project.data.find(item => item.id == this.$route.params.subproject_id)
       }
       if(!subproject){
-        subproject = this.myProjects.find(item => item.id == this.$route.params.subproject_id)
+        subproject = this.myProjects.find(item => item.subproject_id == this.$route.params.subproject_id)
       }
       this.subprojectName = subproject ?subproject.name : "项目"
     }
@@ -100,12 +115,11 @@ export default {
       }),
   },
   activated () {
+    this.keyword = ''
     this.initHeaderNames()
     this.clearTaskgroupList()
-    this.getTaskgroupList(this.$route.params.subproject_id).then(() => {
-      this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-      this.updateImage()
-    })
+    this.onScrollEnd()
+    this.$refs.search.cancel()
   }
 }
 </script>

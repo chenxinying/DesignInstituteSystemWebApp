@@ -4,7 +4,7 @@
       <x-header>待解决的问题</x-header>
     </div>
     <div class="search-fix-top" style="top:46px;">
-      <problem-filter :filter-charger-id="openid" filter-state="1" @on-click-sure="onClickSure" ref="problemFilter"></problem-filter>
+      <problem-filter source="my" :filter-charger-id="openid" :filter-state="1" @on-click-sure="onClickSure" ref="problemFilter"></problem-filter>
     </div>
     <list-view :list="problems" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:91px;"></list-view>
   </div>
@@ -52,12 +52,13 @@ export default {
       }),
   },
   created () {
+  },
+  activated () {
+    this.clearMyProblem()
     this.addMyProblem().then(() => {
       this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
       this.updateImage()
     })
-  },
-  activated () {
     //this.updateProblemQueryParams({changer_id : this.openid, state : 1})
   },
   deactivated () {
@@ -84,10 +85,7 @@ export default {
     },
     onClickSure () {
       this.clearMyProblem()
-      this.addMyProblem(this.$refs.problemFilter.queryParams).then(()=>{
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImage()
-      })
+      this.onScrollEnd ()
     }
   }
 }

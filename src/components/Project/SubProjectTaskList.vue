@@ -6,7 +6,7 @@
     </div>
 
     <div class="search-fix-top" style="top:46px;">
-      <search v-model="keyword" auto-scroll-to-top @on-submit="onSubmit"></search>
+      <task-filter @on-click-sure="onClickSure" ref="taskFilter"></task-filter>
     </div>
 
     <list-view header="任务列表" :list="lists" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:90px;"></list-view>
@@ -17,33 +17,48 @@
 import { Search, XHeader } from 'vux'
 import { mapState, mapActions } from 'vuex'
 import ListView from '../ListView'
+import TaskFilter from '../Task/TaskFilter'
 
 export default {
   components: {
     Search,
     ListView,
-    XHeader
+    XHeader,
+    TaskFilter
   },
   methods: {
      ...mapActions([
       'getTaskList',
+      'clearTaskList',
       'updateImage'
     ]),
     onSubmit () {
-      console.log("执行搜索")
+      this.onClickSure()
     },
     onScrollEnd () {
-      this.getTaskList(this.$route.params.taskgroup_id).then(() => {
+      var queryParams = {
+        taskgroup_id : this.$route.params.taskgroup_id,
+        ...this.$refs.taskFilter.queryParams
+      }
+      this.getTaskList(queryParams).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.updateImage()
       })
     },
     onClickLoadMore () {
-      this.getTaskList(this.$route.params.taskgroup_id).then(() => {
+      var queryParams = {
+        taskgroup_id : this.$route.params.taskgroup_id,
+        ...this.$refs.taskFilter.queryParams
+      }
+      this.getTaskList(queryParams).then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.$refs.listView.addScrollHandler()
         this.updateImage()
       })
+    },
+    onClickSure () {
+      this.clearTaskList(this.$route.params.taskgroup_id)
+      this.onScrollEnd()
     },
     initHeaderNames () {
       this.taskgroupName = this.taskgroupList.find(item => item.id == this.$route.params.taskgroup_id).name
@@ -53,7 +68,7 @@ export default {
         subproject = project.data.find(item => item.id == this.$route.params.subproject_id)
       }
       if(!subproject){
-        subproject = this.myProjectList.find(item => item.id == this.$route.params.subproject_id)
+        subproject = this.myProjectList.find(item => item.subproject_id == this.$route.params.subproject_id)
       }
       this.subprojectName = subproject.name
     }
@@ -118,8 +133,12 @@ export default {
       }),
   },
   activated () {
+    this.clearTaskList(this.$route.params.taskgroup_id)
     this.initHeaderNames()
-    this.getTaskList(this.$route.params.taskgroup_id).then(() => {
+    var queryParams = {
+      taskgroup_id : this.$route.params.taskgroup_id,
+    }
+    this.getTaskList(queryParams).then(() => {
       this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
       this.updateImage()
     })

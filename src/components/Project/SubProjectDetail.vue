@@ -235,6 +235,10 @@ export default {
   },
   watch: {
     index: function (newIndex) {
+      setTimeout(() => {
+        this.$refs.swiper.$children[newIndex].$el.scrollTop = 0
+      }, 100);
+      console.log(this.$refs.swiper.$children[newIndex])
       if(newIndex == 2){
         var h = this.$refs.swiper.$children[2].$el.scrollHeight
         this.$refs.swiper.xheight = h + "px"
@@ -254,7 +258,7 @@ export default {
             subproject = project.data.find(item => item.id == state.route.params.subproject_id)
           }
           if(!subproject){
-            subproject = state.project_my.projects.find(item => item.id == state.route.params.subproject_id)
+            subproject = state.project_my.projects.find(item => item.subproject_id == state.route.params.subproject_id)
           }
           return subproject
       },

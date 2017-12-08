@@ -113,7 +113,7 @@ export default {
   },
   //根据openid获取参与的子项目列表
   getMySubProjects(params, cb, errorCb){
-    Vue.http.get(_request_host + 'admin/Project/ListUserSuproject',
+    Vue.http.get(_request_host + 'admin/Project/ListUserSubproject',
     {params}
     ).then(
       (response) => {

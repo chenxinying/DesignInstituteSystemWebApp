@@ -38,13 +38,13 @@ const mutations = {
 }
 
 const actions = {
-  getTaskgroupList ({commit, state, rootState}, subprj_id) {
+  getTaskgroupList ({commit, state, rootState}, queryParams) {
     return new Promise((resolve, reject) => {
       api.getTaskgroupList({
         company_id : rootState.user_info.company_id,
         start : state.start,
         count : rootState.request_count,
-        subprj_id : subprj_id
+        ...queryParams
       },
       lists => {
         if(lists.length < rootState.request_count)
@@ -60,13 +60,13 @@ const actions = {
       })
     })
   },
-  getTaskList ({commit, state, rootState}, taskgroup_id) {
+  getTaskList ({commit, state, rootState}, queryParams) {
     return new Promise((resolve, reject) => {
-      var subprojectInfo = state.taskList.find(item => item.taskgroup_id == taskgroup_id)
+      var subprojectInfo = state.taskList.find(item => item.taskgroup_id == queryParams.taskgroup_id)
       api.getTaskList({
-        taskgoup_id : taskgroup_id,
         start : subprojectInfo ? subprojectInfo.start : 0,
-        count : rootState.request_count
+        count : rootState.request_count,
+        ...queryParams
       },
       projects => {
         if(projects.length < rootState.request_count)
@@ -88,7 +88,13 @@ const actions = {
   clearTaskgroupList({commit}) {
     commit(types.UPDATE_TASK_GROUP_LIST, [])
     commit(types.UPDATE_TASK_GROUP_START, 0)
-    commit(types.UPDATE_TASK_GROUP_LOAD_END, true)
+    commit(types.UPDATE_TASK_GROUP_LOAD_END, false)
+  },
+  clearTaskList({commit, state, rootState}, taskgroup_id){
+    var subprojectInfo = state.taskList.find(item => item.taskgroup_id == taskgroup_id)
+    subprojectInfo.start = 0
+    subprojectInfo.loadEnd = false
+    subprojectInfo.data = []
   }
 }
 
