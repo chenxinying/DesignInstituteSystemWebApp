@@ -8,7 +8,6 @@ const state = {
   start : 0,
   taskgroupList : [],
   taskList : [],
-
 }
 
 const getters = {

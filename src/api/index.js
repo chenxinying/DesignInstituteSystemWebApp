@@ -202,4 +202,30 @@ export default {
       }
     )
   },
+  //获取用户的统计数据
+  getUserStatistics(params, cb, errorCb){
+    Vue.http.get(_request_host + 'admin/User/UserCount',
+    {params}
+    ).then(
+      (response) => {
+        cb(response.data)
+      },
+      (response) => {
+        errorCb(response.data)
+      }
+    )
+  },
+  //获取用户任务列表
+  getUserTasklist(params, cb, errorCb){
+    Vue.http.get(_request_host + 'admin/Taskgroup/UserTasklist',
+    {params}
+    ).then(
+      (response) => {
+        cb(response.data)
+      },
+      (response) => {
+        errorCb(response.data)
+      }
+    )
+  },
 }

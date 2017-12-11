@@ -64,12 +64,25 @@ export default {
   },
   methods: {
     initHeaderNames(){
-      this.taskgroupName = this.taskgroupList.find(item => item.id == this.$route.params.taskgroup_id).name
-      var taskInfo = this.taskList.find(item => item.taskgroup_id == this.$route.params.taskgroup_id)
-      if(taskInfo){
-        this.task = taskInfo.data.find(item => item.id == this.$route.params.task_id)
-        this.isLoadEnd = taskInfo.loadEnd
-        this.clockerTime = this.task.end_time_plan
+      var taskInfo;
+      var taskgroup = this.taskgroupList.find(item => item.id == this.$route.params.taskgroup_id)
+      if(taskgroup){
+        this.taskgroupName = taskgroup.name
+        taskInfo = this.taskList.find(item => item.taskgroup_id == this.$route.params.taskgroup_id)
+        if(taskInfo){
+          this.task = taskInfo.data.find(item => item.id == this.$route.params.task_id)
+          this.isLoadEnd = taskInfo.loadEnd
+          this.clockerTime = this.task.end_time_plan
+        }
+      }
+      if(!taskInfo){
+        taskInfo = this.myTaskList.find(item => item.task_id == this.$route.params.task_id)
+        if(taskInfo){
+          this.taskgroupName = taskInfo.taskgroup_name
+          this.task = taskInfo
+          this.isLoadEnd = taskInfo.loadEnd
+          this.clockerTime = this.task.end_time_plan
+        }
       }
     }
   },
@@ -86,7 +99,8 @@ export default {
   computed: {
     ...mapState({
         taskList: state => state.task.taskList,
-        taskgroupList : state => state.task.taskgroupList
+        taskgroupList : state => state.task.taskgroupList,
+        myTaskList : state => state.task_my.taskList,
       }),
   },
   activated () {

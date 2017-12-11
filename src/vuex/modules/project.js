@@ -136,14 +136,13 @@ const actions = {
       projectNames => {
     })
   },
-  updateSubProjectNames({ commit, state }, project_id){
-    if(project_id == -1){
+  updateSubProjectNames({ commit, state }, queryParams){
+    if(queryParams.project_id == -1){
       commit(types.UPDATE_SUBPROJECT_NAME, [])
       return
     }
-    api.getSubProjectNames({
-      project_id: project_id,
-      },
+    api.getSubProjectNames(
+      queryParams,
       subprojectNames => {
         commit(types.UPDATE_SUBPROJECT_NAME, subprojectNames)
       },

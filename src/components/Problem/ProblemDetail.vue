@@ -9,6 +9,7 @@
         <cell title="问题阶段" value="配模阶段"></cell>
         <cell title="问题部位" :value="problem_info.subtype_name"></cell>
         <cell title="问题等级" :value="problem_info.problemGrade"></cell>
+        <cell title="错误面积" :value="problem_info.errorArea"></cell>
         <cell title="问题详情" primary="content" :value="problem_info.description" value-align="left"></cell>
       </group>
 

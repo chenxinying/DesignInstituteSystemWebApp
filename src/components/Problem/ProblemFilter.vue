@@ -141,7 +141,12 @@ export default {
       if(projectId == -1)
         this.subprojectId = -1
 
-      this.updateSubProjectNames(projectId)
+      if(this.source == "my"){
+        this.updateSubProjectNames({project_id : projectId, openid : this.openid})
+      }else{
+        this.updateSubProjectNames({project_id : projectId})
+      }
+
     }
   },
   computed: {
@@ -150,6 +155,7 @@ export default {
       subprojectNames : state => state.project.subprojectNames,
       chargerNames: state => state.problem.chargerNames,
       creatorNames: state => state.problem.creatorNames,
+      openid: state=>state.openid,
     }),
     queryParams () {
       var queryParams = {}
@@ -208,7 +214,13 @@ export default {
 
     if(this.projectId == -1)
         this.subprojectId = -1
-    this.updateSubProjectNames(this.projectId)
+
+    if(this.source == "my"){
+      this.updateSubProjectNames({project_id : this.projectId, openid : this.openid})
+    }else{
+      this.updateSubProjectNames({project_id : this.projectId})
+    }
+
   }
 }
 </script>

@@ -6,7 +6,6 @@
     @on-focus="onFocus"
     @on-cancel="onCancel"
     @on-submit="onSubmit"
-    :placeholder="placeholder"
     ref="search">
     <x-button mini slot="right" v-show="!isFocus" @click.native="showFilter=true">筛选</x-button>
     </search>

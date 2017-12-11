@@ -73,7 +73,6 @@ export default {
   methods : {
      ...mapActions([
       'getProjectNames',
-      'updateSubProjectNames',
     ]),
     onSubmit () {
       this.onClickSure()

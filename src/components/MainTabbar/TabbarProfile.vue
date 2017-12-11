@@ -19,22 +19,22 @@
     <card style="margin-top:-10px;">
       <div slot="content" class="card-demo-flex card-demo-content01">
         <div class="vux-1px-r">
-          <span>{{userInfo.SubprojectCount}}</span>
+          <span>{{statistics.subproject_count}}</span>
           <br/>
           参与项目
         </div>
         <div class="vux-1px-r">
-          <span>{{userInfo.TaskCount}}</span>
+          <span>{{statistics.task_count}}</span>
           <br/>
           参与任务
         </div>
         <div class="vux-1px-r">
-          <span>{{userInfo.ChangerProblemCount}}</span>
+          <span>{{statistics.changer_problem_count}}</span>
           <br/>
           负责问题
         </div>
         <div>
-          <span>{{userInfo.CreatorProblemCount}}</span>
+          <span>{{statistics.creator_problem_count}}</span>
           <br/>
           创建问题
         </div>
@@ -47,11 +47,11 @@
       </cell>
       <cell is-link link="/mytask">
         <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/tabbar/tabbar-task.png">
-        <span slot="after-title"><span style="vertical-align:middle;">待完成的任务</span><badge text="1" style="margin-bottom:15px;"></badge></span>
+        <span slot="after-title"><span style="vertical-align:middle;">待完成的任务</span><badge :text="statistics.incomplete_task_count" style="margin-bottom:15px;"></badge></span>
       </cell>
       <cell is-link link="/myproblem">
         <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/tabbar/tabbar-problem.png">
-        <span slot="after-title"><span style="vertical-align:middle;">待解决的问题</span><badge text="1" style="margin-bottom:15px;"></badge></span>
+        <span slot="after-title"><span style="vertical-align:middle;">待解决的问题</span><badge :text="statistics.unsolve_problem_count" style="margin-bottom:15px;"></badge></span>
       </cell>
     </group>
 
@@ -76,9 +76,16 @@ export default {
   computed: {
     ...mapState({
         openid : state => state.openid,
-        userInfo : state => state.user_info
+        userInfo : state => state.user_info,
+        statistics : state => state.user_statistics
       })
   },
+  methods : {
+    ...mapActions(['getUserStatistics'])
+  },
+  activated () {
+    this.getUserStatistics()
+  }
 }
 </script>
 

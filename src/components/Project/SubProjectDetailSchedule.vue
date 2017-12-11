@@ -1,14 +1,29 @@
 <template>
   <div style="height:100%;">
-  <task-filter></task-filter>
-  <!--<highcharts :options="options"></highcharts>-->
+  <highcharts :options="options" ref="highcharts"></highcharts>
+
+  <group title="倒计时">
+    <cell title="底图还剩">
+      <clocker :time="subproject.dwg_end_plan">
+        <span style="color:red;">%D 天</span>
+        <span style="color:green;">%H 小时</span>
+        <span style="color:blue;">%M 分 %S 秒</span>
+      </clocker>
+    </cell>
+    <cell title="设计还剩">
+      <clocker :time="subproject.end_time_plan">
+        <span style="color:red;">%D 天</span>
+        <span style="color:green;">%H 小时</span>
+        <span style="color:blue;">%M 分 %S 秒</span>
+      </clocker>
+    </cell>
+  </group>
+
   </div>
 </template>
 
 <script>
-import { Panel, ViewBox } from 'vux'
-import TaskFilter from '../Task/TaskFilter'
-import Tabbar from './Tabbar'
+import { Group, Cell, Clocker} from 'vux'
 import Vue from 'vue'
 import VueHighcharts from 'vue-highcharts';
 import Highcharts from 'highcharts';
@@ -20,16 +35,12 @@ Vue.use(VueHighcharts, { Highcharts });
 
 export default {
   components: {
-    Panel,
-    ViewBox,
-    TaskFilter,
-    Tabbar
+    Group, Cell, Clocker
   },
-  methods: {
-  },
-  data () {
-    return {
-      options : {
+  computed: {
+    options : function() {
+
+      return {
 
         chart: {
             type: 'xrange'
@@ -59,24 +70,22 @@ export default {
             reversed: true
         },
         series: [{
-            name: 'Project 1',
+            name: this.subproject.name,
             // pointPadding: 0,
             // groupPadding: 0,
             borderColor: 'gray',
             pointWidth: 20,
             data: [{
-                x: Date.UTC(2014, 10, 21),
-                x2: Date.UTC(2014, 11, 2),
+                x: (new Date(this.subproject.start_time_plan)).getTime(),
+                x2: (new Date(this.subproject.dwg_end_plan)).getTime(),
                 y: 0,
-                partialFill: 0.25
+                partialFill: parseFloat(this.subproject.dwgPercent)
             }, {
-                x: Date.UTC(2014, 11, 2),
-                x2: Date.UTC(2014, 11, 5),
-                y: 1
-            }, {
-                x: Date.UTC(2014, 11, 9),
-                x2: Date.UTC(2014, 11, 19),
-                y: 1
+                color: '#ffcb80',
+                x: (new Date(this.subproject.design_start_plan)).getTime(),
+                x2: (new Date(this.subproject.end_time_plan)).getTime(),
+                y: 1,
+                partialFill: parseFloat(this.subproject.designPercent)
             }],
             dataLabels: {
                 enabled: true
@@ -85,6 +94,7 @@ export default {
 
       }
     }
-  }
+  },
+  props: ['subproject'],
 }
 </script>

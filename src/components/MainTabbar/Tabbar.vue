@@ -4,10 +4,12 @@
         <img slot="icon" src="../../assets/tabbar/tabbar-project.png">
         <span slot="label">项目</span>
       </tabbar-item>
+      <!--
       <tabbar-item link="/task" :selected="route.path === '/task'">
         <img slot="icon" src="../../assets/tabbar/tabbar-task.png">
         <span slot="label">任务</span>
       </tabbar-item>
+      -->
       <tabbar-item link="/problem" :selected="route.path === '/problem'">
         <img slot="icon" src="../../assets/tabbar/tabbar-problem.png">
         <span slot="label">问题</span>

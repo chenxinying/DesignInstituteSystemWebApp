@@ -24,6 +24,16 @@ export default  {
 
     })
   },
+  getUserStatistics({ commit, state }, params){
+    return new Promise((resolve, reject) => {
+      api.getUserStatistics({openid: state.openid},
+        userInfo => {
+          commit(types.UPDATE_USER_STATISTICS, userInfo)
+          resolve()
+        },
+        userInfo => {resolve()})
+    })
+  },
   updateImage({ commit }){
     setTimeout(() => {
       var myImage = document.querySelectorAll('.weui-media-box__thumb');

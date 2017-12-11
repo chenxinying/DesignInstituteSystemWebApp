@@ -7,6 +7,7 @@ import project from './modules/project'
 import project_my from './modules/project-my'
 
 import task from './modules/task'
+import task_my from './modules/task-my'
 import problem from './modules/problem'
 import problem_project from './modules/problem-project'
 import problem_my from './modules/problem-my'
@@ -21,6 +22,7 @@ export default new Vuex.Store({
     project,
     project_my,
     task,
+    task_my,
     problem,
     problem_project,
     problem_my

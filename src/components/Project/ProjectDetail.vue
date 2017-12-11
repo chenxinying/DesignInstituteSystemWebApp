@@ -8,7 +8,7 @@
       <project-filter :filter-project-id="$route.params.id" ref="projectFilter" @on-click-sure="onClickSure"></project-filter>
     </div>
 
-    <list-view header="项目列表" :list="subprojects" type="1" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:90px;"></list-view>
+    <list-view header="项目列表" :list="subprojects" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:90px;"></list-view>
 
   </div>
 </template>
@@ -69,6 +69,7 @@ export default {
       subprojects: state => {
           var showList = []
           var subprojectInfo = state.project.subprojectList.find(item => item.project_id == state.route.params.id)
+          var currentTime = new Date().getTime()
 
           subprojectInfo && subprojectInfo.data.forEach(element => {
             var str = ["", "已立项，底图深化中...", "底图已深化，底图深化审核中...", "底图深化已审核，标准层设计中...", "标准层已下单,变化层设计中...", "变化层已下单，项目归档中...", "项目已归档"]
@@ -76,11 +77,24 @@ export default {
             var bgArray = ['F86E61', '4DA9EA', '05CC91', 'F8B65F', '578AA9', '5F70A8']
             var bgIndex = element.id % bgArray.length
             var bg = "&bg=" + bgArray[bgIndex]
+
+            var dwgStartTime = new Date(element.start_time_plan).getTime()
+            var dwgEndTime = new Date(element.dwg_end_plan).getTime()
+            var dwgPercent = ((currentTime - dwgStartTime) /  (dwgEndTime - dwgStartTime)).toFixed(2) * 100
+
+            var designStartTime = new Date(element.design_start_plan).getTime()
+            var designEndTime = new Date(element.end_time_plan).getTime()
+            var designPercent = ((currentTime - designStartTime) /  (designEndTime - designStartTime)).toFixed(2) * 100
+
             var item = {
               src : "holder.js/60x60?fg=fff" + text + bg,
               title : element.name,
               desc : str[element.state],
               url : '/project/' + element.project_id + '/subproject/' + element.id,
+              meta: {
+                  date: "底图完成：" + dwgPercent + "%",
+                  other: "设计完成：" + designPercent + "%",
+                }
             }
             showList.push(item)
           });
