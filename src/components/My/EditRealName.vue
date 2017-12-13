@@ -12,19 +12,29 @@
 </template>
 
 <script>
-import { XHeader, Group, XInput, XButton } from 'vux'
+import Vue from 'vue'
+import { XHeader, Group, XInput, XButton, Loading, LoadingPlugin } from 'vux'
 import { mapState, mapActions } from 'vuex'
+Vue.use(LoadingPlugin)
 
 export default {
   components: {
     XHeader,
     Group,
     XInput,
-    XButton
+    XButton,
+    Loading
   },
   methods: {
+     ...mapActions(['editRealName']),
     save(){
-      console.log(this.name)
+      this.$vux.loading.show({
+        text: '正在保存'
+      })
+      this.editRealName({real_name: this.userInfo.real_name}).then(()=>{
+        this.$vux.loading.hide()
+        this.$router.go(-1)
+      })
     }
   },
   computed: {

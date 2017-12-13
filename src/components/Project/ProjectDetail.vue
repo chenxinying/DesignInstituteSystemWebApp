@@ -80,11 +80,11 @@ export default {
 
             var dwgStartTime = new Date(element.start_time_plan).getTime()
             var dwgEndTime = new Date(element.dwg_end_plan).getTime()
-            var dwgPercent = ((currentTime - dwgStartTime) /  (dwgEndTime - dwgStartTime)).toFixed(2) * 100
+            var dwgPercent = currentTime >= dwgEndTime ? 100 : ((currentTime - dwgStartTime) /  (dwgEndTime - dwgStartTime)).toFixed(2) * 100
 
             var designStartTime = new Date(element.design_start_plan).getTime()
             var designEndTime = new Date(element.end_time_plan).getTime()
-            var designPercent = ((currentTime - designStartTime) /  (designEndTime - designStartTime)).toFixed(2) * 100
+            var designPercent = currentTime >= designEndTime ? 100 : ((currentTime - designStartTime) /  (designEndTime - designStartTime)).toFixed(2) * 100
 
             var item = {
               src : "holder.js/60x60?fg=fff" + text + bg,
@@ -92,8 +92,8 @@ export default {
               desc : str[element.state],
               url : '/project/' + element.project_id + '/subproject/' + element.id,
               meta: {
-                  date: "底图完成：" + dwgPercent + "%",
-                  other: "设计完成：" + designPercent + "%",
+                  date: "底图时间已使用：" + dwgPercent + "%",
+                  other: "设计时间已使用：" + designPercent + "%",
                 }
             }
             showList.push(item)

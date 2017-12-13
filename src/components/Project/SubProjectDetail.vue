@@ -108,11 +108,11 @@ export default {
           var currentTime = new Date().getTime()
           var dwgStartTime = new Date(subproject.start_time_plan).getTime()
           var dwgEndTime = new Date(subproject.dwg_end_plan).getTime()
-          var dwgPercent = ((currentTime - dwgStartTime) / (dwgEndTime - dwgStartTime)).toFixed(2)
+          var dwgPercent = currentTime >= dwgEndTime ? 1 : ((currentTime - dwgStartTime) / (dwgEndTime - dwgStartTime)).toFixed(2)
 
           var designStartTime = new Date(subproject.design_start_plan).getTime()
           var designEndTime = new Date(subproject.end_time_plan).getTime()
-          var designPercent = ((currentTime - designStartTime) / (designEndTime - designStartTime)).toFixed(2)
+          var designPercent = currentTime >= designEndTime ? 1 :((currentTime - designStartTime) / (designEndTime - designStartTime)).toFixed(2)
 
           var obj = {
             dwgPercent : dwgPercent,

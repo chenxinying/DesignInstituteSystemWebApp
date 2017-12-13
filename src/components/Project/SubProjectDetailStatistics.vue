@@ -30,22 +30,22 @@
       <card>
         <div slot="content" class="card-demo-flex card-demo-content01">
           <div class="vux-1px-r">
-            <span>5</span>
+            <span>{{task_statistics.ParticipantsCount}}</span>
             <br/>
             参与人数
           </div>
           <div class="vux-1px-r">
-            <span>8</span>
+            <span>{{(task_statistics.TaskCount/task_statistics.ParticipantsCount).toFixed(2)}}</span>
             <br/>
             人均任务
           </div>
           <div class="vux-1px-r">
-            <span>2</span>
+            <span>{{(task_statistics.TodayCountTasklist/task_statistics.ParticipantsCount).toFixed(2)}}</span>
             <br/>
             今日人均完成
           </div>
           <div>
-            <span>1</span>
+            <span>{{(task_statistics.WeekCountTasklist/task_statistics.ParticipantsCount).toFixed(2)}}</span>
             <br/>
             本周人均完成
           </div>

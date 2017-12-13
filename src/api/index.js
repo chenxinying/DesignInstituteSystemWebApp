@@ -1,9 +1,6 @@
 import Vue from 'vue'
-import { AjaxPlugin, ToastPlugin } from 'vux'
-Vue.use(AjaxPlugin)
-Vue.use(ToastPlugin)
 
-let _request_host = "http://192.168.3.158/DesignInstituteSystem/design_institute/public/"
+let _request_host = "/design_institute/public/"
 
 export default {
   //获取总项目<id，名字>键值数组
@@ -218,6 +215,38 @@ export default {
   //获取用户任务列表
   getUserTasklist(params, cb, errorCb){
     Vue.http.get(_request_host + 'admin/Taskgroup/UserTasklist',
+    {params}
+    ).then(
+      (response) => {
+        cb(response.data)
+      },
+      (response) => {
+        errorCb(response.data)
+      }
+    )
+  },
+  //修改用户信息
+  editUserInfo(params, cb, errorCb){
+    Vue.http.post(
+      _request_host + 'admin/User/postEditUser',
+      params,
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }
+    ).then(
+      (response) => {
+        cb(response.data)
+      },
+      (response) => {
+        errorCb(response.data)
+      }
+    )
+  },
+  //获取任务组名
+  getTaskgroupName(params, cb, errorCb){
+    Vue.http.get(_request_host + 'admin/Taskgroup/UserTaskgrouplist',
     {params}
     ).then(
       (response) => {

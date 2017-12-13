@@ -4,7 +4,7 @@
       <x-header>待完成的任务</x-header>
     </div>
     <div class="search-fix-top" style="top:46px;">
-       <task-filter @on-click-sure="onClickSure" ref="taskFilter"></task-filter>
+       <task-filter @on-click-sure="onClickSure" ref="taskFilter" :is-my-task="true"></task-filter>
     </div>
 
     <list-view :list="projects" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:91px;"></list-view>
@@ -78,7 +78,7 @@ export default {
       })
     },
     onClickSure () {
-      this.addMyTaskList()
+      this.clearMyTaskList()
       this.onScrollEnd()
     }
   },

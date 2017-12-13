@@ -43,5 +43,45 @@ export default  {
         });
       }
     }, 0)
+  },
+  editRealName({commit, state}, params){
+    return new Promise((resolve, reject) => {
+
+      var postParams = new URLSearchParams();
+      postParams.append('openid', state.openid);
+      postParams.append('real_name', params.real_name);
+
+      api.editUserInfo(postParams,
+        res => {
+          if(res.success)
+          {
+            var userInfo = {...state.user_info}
+            userInfo.real_name = params.real_name
+            commit(types.UPDATE_USER_INFO, userInfo)
+          }
+          resolve()
+        },
+        res => {resolve()})
+    })
+  },
+  editCellPhone({commit, state}, params){
+    return new Promise((resolve, reject) => {
+
+      var postParams = new URLSearchParams();
+      postParams.append('openid', state.openid);
+      postParams.append('mobile_phone', params.mobile_phone);
+
+      api.editUserInfo(postParams,
+        res => {
+          if(res.success)
+          {
+            var userInfo = {...state.user_info}
+            userInfo.mobile_phone = params.mobile_phone
+            commit(types.UPDATE_USER_INFO, userInfo)
+          }
+          resolve()
+        },
+        res => {resolve()})
+    })
   }
 }

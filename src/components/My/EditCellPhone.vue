@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { XHeader, Group, XInput, XButton } from 'vux'
+import { XHeader, Group, XInput, XButton, Loading } from 'vux'
 import { mapState, mapActions } from 'vuex'
 
 export default {
@@ -20,11 +20,19 @@ export default {
     XHeader,
     Group,
     XInput,
-    XButton
+    XButton,
+    Loading
   },
   methods: {
+    ...mapActions(['editCellPhone']),
     save () {
-      console.log(this.name)
+      this.$vux.loading.show({
+        text: '正在保存'
+      })
+      this.editCellPhone({mobile_phone: this.userInfo.mobile_phone}).then(()=>{
+        this.$vux.loading.hide()
+        this.$router.go(-1)
+      })
     }
   },
   computed: {

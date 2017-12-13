@@ -1,10 +1,12 @@
 import api from '../../api'
 import * as types from '../mutation-types'
+import { type } from 'os';
 
 const state = {
   loadEnd : false,
   start : 0,
   taskList : [],
+  taskgroupNames : [{key:-1, value:'全部'}]
 }
 
 const mutations = {
@@ -25,6 +27,11 @@ const mutations = {
   [types.UPDATE_MY_TASK_LOAD_END] (state, loadEnd){
     state.loadEnd = loadEnd
   },
+  [types.UPDATE_MY_TASK_TASK_GROUP_NAMES] (state, taskgroupNames)
+  {
+    state.taskgroupNames = [{key:-1, value:'全部'}]
+    taskgroupNames.forEach((value, index, array) => state.taskgroupNames.push({key: value.taskgroup_id, value: value.taskgroup_name}))
+  }
 }
 
 const actions = {
@@ -55,6 +62,15 @@ const actions = {
     commit(types.UPDATE_MY_TASK_LOAD_END, false)
     commit(types.UPDATE_MY_TASK_START, 0)
     commit(types.UPDATE_MY_TASK_LIST, [])
+  },
+  updateTaskgroupName({commit, state, rootState}, queryParams){
+    api.getTaskgroupName(
+      queryParams,
+      lists => {
+        commit(types.UPDATE_MY_TASK_TASK_GROUP_NAMES, lists)
+      },
+      lists => {
+      })
   }
 }
 

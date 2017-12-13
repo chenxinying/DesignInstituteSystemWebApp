@@ -47,11 +47,11 @@
       </cell>
       <cell is-link link="/mytask">
         <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/tabbar/tabbar-task.png">
-        <span slot="after-title"><span style="vertical-align:middle;">待完成的任务</span><badge :text="statistics.incomplete_task_count" style="margin-bottom:15px;"></badge></span>
+        <span slot="after-title"><span style="vertical-align:middle;">待完成的任务</span><badge v-show="statistics.incomplete_task_count>0" :text="statistics.incomplete_task_count" style="margin-bottom:15px;"></badge></span>
       </cell>
       <cell is-link link="/myproblem">
         <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/tabbar/tabbar-problem.png">
-        <span slot="after-title"><span style="vertical-align:middle;">待解决的问题</span><badge :text="statistics.unsolve_problem_count" style="margin-bottom:15px;"></badge></span>
+        <span slot="after-title"><span style="vertical-align:middle;">待解决的问题</span><badge v-show="statistics.unsolve_problem_count>0" :text="statistics.unsolve_problem_count" style="margin-bottom:15px;"></badge></span>
       </cell>
     </group>
 

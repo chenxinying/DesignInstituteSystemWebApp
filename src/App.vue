@@ -9,14 +9,13 @@
 
 <script>
 import Vue from 'vue'
-import { AlertPlugin, Alert } from 'vux'
+import { LoadingPlugin, AjaxPlugin, ToastPlugin } from 'vux'
 import { mapState, mapActions } from 'vuex'
-Vue.use(AlertPlugin)
+Vue.use(LoadingPlugin)
+Vue.use(AjaxPlugin)
+Vue.use(ToastPlugin)
 
 export default {
-  components: {
-    Alert
-  },
   computed : {
     ...mapState({
         openid: state => state.openid,
@@ -36,28 +35,28 @@ export default {
   },
   created () {
     var code = this.getQueryString("code")
-    code = 1
     if(code == null ){
-      //window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx39535e8f079a2b4c&redirect_uri=http%3a%2f%2fwww.rili-tech.com%2fwechat%2f&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect"
+      window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx39535e8f079a2b4c&redirect_uri=http%3a%2f%2fwww.rili-tech.com%2fwechat%2f&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect"
     }
     else{
-      //this.getOpenid({code : code}).then(()=>{
-      //   window.location.search = ""
-      //  if(this.openid == ""){
-      //    this.$router.push('/error')
-      //    return
-      //  }
 
-      //获取company_id
-      this.getUserInfo().then(()=>{
-        if(this.company_id == -1){
-          this.$router.push('/error')
-        }else{
-          this.$router.push('/project')
+      this.getOpenid({code : code}).then(()=>{
+
+        if(this.openid == ""){
+          window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx39535e8f079a2b4c&redirect_uri=http%3a%2f%2fwww.rili-tech.com%2fwechat%2f&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect"
+          return
         }
-      })
 
-    //})
+        //获取company_id
+        this.getUserInfo().then(()=>{
+          if(this.company_id == -1){
+            this.$router.push('/error')
+          }else{
+            this.$router.push('/project')
+          }
+        })
+     })
+
     }
   }
 }

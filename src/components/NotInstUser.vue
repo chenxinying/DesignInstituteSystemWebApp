@@ -1,7 +1,6 @@
 <script>
 import Vue from 'vue'
 import { AlertPlugin, Alert } from 'vux'
-
 Vue.use(AlertPlugin)
 
 export default {
