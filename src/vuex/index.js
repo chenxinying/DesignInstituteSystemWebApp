@@ -5,6 +5,7 @@ import actions from './actions'
 import mutations from './mutations'
 import project from './modules/project'
 import project_my from './modules/project-my'
+import project_staff from './modules/project-staff'
 
 import task from './modules/task'
 import task_my from './modules/task-my'
@@ -21,6 +22,7 @@ export default new Vuex.Store({
   modules: {
     project,
     project_my,
+    project_staff,
     task,
     task_my,
     problem,

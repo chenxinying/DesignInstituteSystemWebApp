@@ -22,6 +22,8 @@ import EditCellPhone from '@/components/My/EditCellPhone'
 import ProjectDetail from '@/components/Project/ProjectDetail'
 import SubProjectDetail from '@/components/Project/SubProjectDetail'
 import SubProjectProblem from '@/components/Project/SubProjectProblem'
+import SubProjectStaff from '@/components/Project/SubProjectStaffList'
+import SubProjectStaffRole from '@/components/Project/SubProjectStaffRole'
 import SubProjectTaskgroupList from '@/components/Project/SubProjectTaskgroupList'
 import SubProjectTaskList from '@/components/Project/SubProjectTaskList'
 import SubProjectTaskDetail from '@/components/Project/SubProjectTaskDetail'
@@ -31,9 +33,6 @@ import ProblemDetail from '@/components/Problem/ProblemDetail'
 
 //NotInstUser
 import NotInstUser from '@/components/NotInstUser'
-
-
-
 
 Vue.use(Router)
 
@@ -82,6 +81,14 @@ export default new Router({
     {
       path: '/project/:project_id/subproject/:subproject_id/problem',
       component : SubProjectProblem
+    },
+    {
+      path: '/project/:project_id/subproject/:subproject_id/staff',
+      component : SubProjectStaff
+    },
+    {
+      path: '/project/:project_id/subproject/:subproject_id/staff/:openid',
+      component : SubProjectStaffRole
     },
     {
       path: '/project/:project_id/subproject/:subproject_id/taskgroup',

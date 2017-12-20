@@ -1,6 +1,7 @@
 import Vue from 'vue'
 
 let _request_host = "/design_institute/public/"
+//let _request_host = "http://192.168.3.158/DesignInstituteSystem/design_institute/public/"
 
 export default {
   //获取总项目<id，名字>键值数组
@@ -247,6 +248,19 @@ export default {
   //获取任务组名
   getTaskgroupName(params, cb, errorCb){
     Vue.http.get(_request_host + 'admin/Taskgroup/UserTaskgrouplist',
+    {params}
+    ).then(
+      (response) => {
+        cb(response.data)
+      },
+      (response) => {
+        errorCb(response.data)
+      }
+    )
+  },
+  //获取子项目的参与人员列表
+  getSubprojectStaffList(params, cb, errorCb){
+    Vue.http.get(_request_host + 'admin/Role/project_role_list',
     {params}
     ).then(
       (response) => {

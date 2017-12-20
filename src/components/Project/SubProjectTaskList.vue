@@ -40,21 +40,25 @@ export default {
         taskgroup_id : this.$route.params.taskgroup_id,
         ...this.$refs.taskFilter.queryParams
       }
-      this.getTaskList(queryParams).then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImage()
-      })
+      setTimeout(() => {
+        this.getTaskList(queryParams).then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+          this.updateImage()
+        })
+      }, 1000)
     },
     onClickLoadMore () {
       var queryParams = {
         taskgroup_id : this.$route.params.taskgroup_id,
         ...this.$refs.taskFilter.queryParams
       }
-      this.getTaskList(queryParams).then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.$refs.listView.addScrollHandler()
-        this.updateImage()
-      })
+      setTimeout(() => {
+        this.getTaskList(queryParams).then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+          this.$refs.listView.addScrollHandler()
+          this.updateImage()
+        })
+      }, 1000)
     },
     onClickSure () {
       this.clearTaskList(this.$route.params.taskgroup_id)
@@ -138,10 +142,12 @@ export default {
     var queryParams = {
       taskgroup_id : this.$route.params.taskgroup_id,
     }
-    this.getTaskList(queryParams).then(() => {
-      this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-      this.updateImage()
-    })
+    setTimeout(() => {
+      this.getTaskList(queryParams).then(() => {
+        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+        this.updateImage()
+      })
+    }, 1000)
   }
 }
 </script>

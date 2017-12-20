@@ -9,13 +9,13 @@
       <search v-model="keyword" @on-submit="onSubmit" @on-cancel="onCancel" position="absolute" ref="search"></search>
     </div>
 
-    <list-view header="任务组列表" :list="lists" type="1" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="margin-top:90px;"></list-view>
+    <list-view header="参与人员" :list="lists" type="3" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="margin-top:90px;"></list-view>
 
   </div>
 </template>
 
 <script>
-import { Search, XHeader, Card, Group } from 'vux'
+import { Search, XHeader, Card, Group, Cell, Checklist } from 'vux'
 import { mapState, mapActions } from 'vuex'
 import ListView from '../ListView'
 
@@ -25,16 +25,15 @@ export default {
     ListView,
     XHeader,
     Card,
-    Group
+    Group,
+    Cell,
+    Checklist
   },
   methods: {
      ...mapActions([
-      'getTaskgroupList',
-      'clearTaskgroupList',
-      'updateImage'
+      'updateStaffList',
     ]),
     onSubmit () {
-      this.clearTaskgroupList()
       this.onScrollEnd()
     },
     onCancel(){
@@ -45,28 +44,22 @@ export default {
     },
     onScrollEnd () {
       var queryParams = {
-        subprj_id : this.$route.params.subproject_id,
+        subproject_id : this.$route.params.subproject_id,
         keyword : this.keyword
       }
-      setTimeout(() => {
-        this.getTaskgroupList(queryParams).then(() => {
-          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-          this.updateImage()
-        })
-      }, 1000)
+      this.updateStaffList(queryParams).then(() => {
+        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+      })
     },
     onClickLoadMore () {
       var queryParams = {
-        subprj_id : this.$route.params.subproject_id,
+        subproject_id : this.$route.params.subproject_id,
         keyword : this.keyword
       }
-      setTimeout(() => {
-        this.getTaskgroupList(queryParams).then(() => {
-          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-          this.$refs.listView.addScrollHandler()
-          this.updateImage()
-        })
-      }, 1000)
+      this.updateStaffList(queryParams).then(() => {
+        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+        this.$refs.listView.addScrollHandler()
+      })
     },
     initHeaderNames () {
       var project = this.projectList.find(item => item.project_id == this.$route.params.project_id)
@@ -87,7 +80,7 @@ export default {
     return {
       keyword: '',
       projectName: '',
-      subprojectName: ''
+      subprojectName: '',
     }
   },
   computed: {
@@ -95,24 +88,19 @@ export default {
         lists: state => {
             var showList = []
 
-            state.task.taskgroupList.forEach(element => {
-
-              var text = "&text=" + element.name.substring(0, 4)
-              var bgArray = ['F86E61', '4DA9EA', '05CC91', 'F8B65F', '578AA9', '5F70A8']
-              var bgIndex = element.id % bgArray.length
-              var bg = "&bg=" + bgArray[bgIndex]
+            state.project_staff.staffList.forEach(element => {
 
               var item = {
-                src : "holder.js/60x60?fg=fff" + text + bg,
-                desc : "任务总数：" + element.task_count + " | <span style='color:red;'>待完成任务：" + element.task_count_incomplete + "</span>",
-                title : element.name,
-                url : '/project/' + state.route.params.project_id + '/subproject/' + state.route.params.subproject_id + '/taskgroup/' + element.id,
+                src : element.headimgurl,
+                //desc : "任务总数：" + element.task_count + " | <span style='color:red;'>待完成任务：" + element.task_count_incomplete + "</span>",
+                title : element.nickname,
+                url : '/project/' + state.route.params.project_id + '/subproject/' + state.route.params.subproject_id + '/staff/' + element.openid,
               }
               showList.push(item)
             });
             return showList
-          },
-        isLoadEnd : state => state.task.loadEnd,
+        },
+        isLoadEnd : state => state.project_staff.loadEnd,
         projectList : state => state.project.projectList,
         subprojectList : state =>  state.project.subprojectList,
         myProjects : state => state.project_my.projects,
@@ -121,7 +109,6 @@ export default {
   activated () {
     this.keyword = ''
     this.initHeaderNames()
-    this.clearTaskgroupList()
     this.onScrollEnd()
     this.$refs.search.cancel()
   }

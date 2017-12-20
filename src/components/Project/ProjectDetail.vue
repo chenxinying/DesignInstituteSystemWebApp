@@ -40,21 +40,25 @@ export default {
         project_id : this.$route.params.id,
         ...this.$refs.projectFilter.queryParams
       }
-      this.getSubProjectList(queryParams).then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImage()
-      })
+      setTimeout(() => {
+        this.getSubProjectList(queryParams).then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+          this.updateImage()
+        })
+      }, 1000)
     },
     onClickLoadMore () {
       var queryParams = {
         project_id : this.$route.params.id,
         ...this.$refs.projectFilter.queryParams
       }
-      this.getSubProjectList(queryParams).then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.$refs.listView.addScrollHandler()
-        this.updateImage()
-      })
+      setTimeout(() => {
+        this.getSubProjectList(queryParams).then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+          this.$refs.listView.addScrollHandler()
+          this.updateImage()
+        })
+      }, 1000)
     },
   },
   activated () {

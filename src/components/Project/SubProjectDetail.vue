@@ -72,6 +72,8 @@ export default {
         this.$router.push(this.$route.params.subproject_id + "/taskgroup")
       }else if(key == 'problem'){
         this.$router.push(this.$route.params.subproject_id + "/problem")
+      }else if(key == 'staff'){
+        this.$router.push(this.$route.params.subproject_id + "/staff")
       }
     }
   },
@@ -133,6 +135,7 @@ export default {
   data () {
    return {
       menus: {
+          staff: '人员列表',
           task: '任务列表',
           problem: '问题列表',
         },

@@ -34,17 +34,22 @@ export default {
       }
     },
     onScrollEnd () {
-      this.getProjectList({keyword : this.keyword}).then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImage()
-      })
+      setTimeout(() => {
+        this.getProjectList({keyword : this.keyword}).then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+          this.updateImage()
+        })
+      }, 1000)
     },
     onClickLoadMore () {
-      this.getProjectList({keyword : this.keyword}).then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.$refs.listView.addScrollHandler()
-        this.updateImage()
-      })
+      this.clearProjectList()
+      setTimeout(() => {
+        this.getProjectList({keyword : this.keyword}).then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+          this.$refs.listView.addScrollHandler()
+          this.updateImage()
+        })
+      }, 1000);
     },
   },
   data () {
@@ -81,10 +86,12 @@ export default {
       })
   },
   created () {
-    this.getProjectList().then(() => {
+    setTimeout(() => {
+      this.getProjectList().then(() => {
       this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
       this.updateImage()
     })
+    }, 1000)
   }
 }
 </script>

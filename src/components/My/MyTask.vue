@@ -24,11 +24,7 @@ export default {
     ListView,
     TaskFilter
   },
-  data () {
-    return {
-    }
-  },
-    computed:{
+  computed:{
     ...mapState({
         projects: state => {
           var showList = []
@@ -65,17 +61,21 @@ export default {
       'updateImage'
     ]),
     onScrollEnd () {
-      this.addMyTaskList(this.$refs.taskFilter.queryParams).then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImage()
-      })
+      setTimeout(() => {
+        this.addMyTaskList(this.$refs.taskFilter.queryParams).then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+          this.updateImage()
+        })
+      }, 1000)
     },
     onClickLoadMore () {
-      this.addMyTaskList(this.$refs.taskFilter.queryParams).then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.$refs.listView.addScrollHandler()
-        this.updateImage()
-      })
+      setTimeout(() => {
+        this.addMyTaskList(this.$refs.taskFilter.queryParams).then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+          this.$refs.listView.addScrollHandler()
+          this.updateImage()
+        })
+      }, 1000)
     },
     onClickSure () {
       this.clearMyTaskList()
@@ -84,10 +84,12 @@ export default {
   },
   activated () {
     this.clearMyTaskList()
-    this.addMyTaskList().then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImage()
-    })
+    setTimeout(() => {
+      this.addMyTaskList().then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+          this.updateImage()
+      })
+    }, 1000)
   }
 }
 </script>

@@ -51,18 +51,14 @@ export default {
         isLoadEnd : state => state.problem_my.loadEnd
       }),
   },
-  created () {
-  },
   activated () {
     this.clearMyProblem()
-    this.addMyProblem().then(() => {
-      this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-      this.updateImage()
-    })
-    //this.updateProblemQueryParams({changer_id : this.openid, state : 1})
-  },
-  deactivated () {
-    //this.updateProblemQueryParams(this.oldQueryParams)
+    setTimeout(() => {
+      this.addMyProblem().then(() => {
+        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+        this.updateImage()
+      })
+    }, 1000)
   },
   methods : {
      ...mapActions([
@@ -71,17 +67,21 @@ export default {
       'updateImage'
     ]),
     onScrollEnd () {
-      this.addMyProblem(this.$refs.problemFilter.queryParams).then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImage()
-      })
+      setTimeout(() => {
+        this.addMyProblem(this.$refs.problemFilter.queryParams).then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+          this.updateImage()
+        })
+      }, 1000)
     },
     onClickLoadMore () {
-      this.addMyProblem(this.$refs.problemFilter.queryParams).then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.$refs.listView.addScrollHandler()
-        this.updateImage()
-      })
+      setTimeout(() => {
+        this.addMyProblem(this.$refs.problemFilter.queryParams).then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+          this.$refs.listView.addScrollHandler()
+          this.updateImage()
+        })
+      }, 1000)
     },
     onClickSure () {
       this.clearMyProblem()

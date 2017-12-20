@@ -59,17 +59,21 @@ export default {
       'updateImage'
     ]),
     onScrollEnd () {
-      this.addMyProject(this.$refs.projectFilter.queryParams).then(() => {
-          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-          this.updateImage()
-      })
+      setTimeout(() => {
+        this.addMyProject(this.$refs.projectFilter.queryParams).then(() => {
+            this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+            this.updateImage()
+        })
+      }, 1000)
     },
     onClickLoadMore () {
-      this.addMyProject(this.$refs.projectFilter.queryParams).then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.$refs.listView.addScrollHandler()
-        this.updateImage()
-      })
+      setTimeout(() => {
+        this.addMyProject(this.$refs.projectFilter.queryParams).then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+          this.$refs.listView.addScrollHandler()
+          this.updateImage()
+        })
+      }, 1000)
     },
     onClickSure () {
       this.clearMyProject()
@@ -78,10 +82,12 @@ export default {
   },
   activated () {
     this.clearMyProject()
-    this.addMyProject().then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImage()
-    })
+    setTimeout(() => {
+      this.addMyProject().then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+          this.updateImage()
+      })
+    }, 1000)
   }
 }
 </script>

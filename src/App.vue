@@ -1,8 +1,8 @@
 <template>
   <div style="height:100%;">
-    <keep-alive>
-      <router-view></router-view>
-    </keep-alive>
+      <keep-alive>
+        <router-view></router-view>
+      </keep-alive>
     <router-view name="navbar" slot="bottom"></router-view>
   </div>
 </template>
@@ -35,6 +35,7 @@ export default {
   },
   created () {
     var code = this.getQueryString("code")
+    //code = 1
     if(code == null ){
       window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx39535e8f079a2b4c&redirect_uri=http%3a%2f%2fwww.rili-tech.com%2fwechat%2f&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect"
     }
@@ -44,7 +45,6 @@ export default {
 
         if(this.openid == ""){
           window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx39535e8f079a2b4c&redirect_uri=http%3a%2f%2fwww.rili-tech.com%2fwechat%2f&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect"
-          return
         }
 
         //获取company_id
@@ -55,7 +55,7 @@ export default {
             this.$router.push('/project')
           }
         })
-     })
+      })
 
     }
   }

@@ -25,24 +25,26 @@ export default {
       'updateImage'
     ]),
     onScrollEnd () {
-      this.addProblem(this.$refs.problemFilter.queryParams).then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImage()
-      })
+      setTimeout(() => {
+        this.addProblem(this.$refs.problemFilter.queryParams).then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+          this.updateImage()
+        })
+      }, 1000)
     },
     onClickLoadMore () {
-      this.addProblem(this.$refs.problemFilter.queryParams).then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.$refs.listView.addScrollHandler()
-        this.updateImage()
-      })
+      this.clearProblem()
+      setTimeout(() => {
+        this.addProblem(this.$refs.problemFilter.queryParams).then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+          this.$refs.listView.addScrollHandler()
+          this.updateImage()
+        })
+      }, 1000)
     },
     onClickSure () {
       this.clearProblem()
-      this.addProblem(this.$refs.problemFilter.queryParams).then(()=>{
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImage()
-      })
+      this.onScrollEnd()
     }
   },
   computed : {
@@ -57,7 +59,6 @@ export default {
 
             var item = {
               src: "holder.js/60x60?fg=fff" + text + bg,
-              //fallbackSrc: "holder.js/60x60?fg=fff" + text + bg,
               title: element.title,
               desc: element.subprj_name,
               url: '/problem/' + element.id,
@@ -75,10 +76,12 @@ export default {
     }),
   },
   created () {
-    this.addProblem().then(() => {
-      this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-      this.updateImage()
-    })
+    setTimeout(() => {
+      this.addProblem().then(() => {
+        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+        this.updateImage()
+      })
+    }, 1000)
   },
 }
 
