@@ -34,6 +34,7 @@ export default {
     },
     onClickLoadMore () {
       this.clearProblem()
+      this.$refs.listView.setIsLoadEnd(false)
       setTimeout(() => {
         this.addProblem(this.$refs.problemFilter.queryParams).then(() => {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
@@ -44,6 +45,7 @@ export default {
     },
     onClickSure () {
       this.clearProblem()
+      this.$refs.listView.setIsLoadEnd(false)
       this.onScrollEnd()
     }
   },

@@ -25,6 +25,7 @@ export default {
     ]),
     onSubmit () {
       this.clearProjectList()
+      this.$refs.listView.setIsLoadEnd(false)
       this.onScrollEnd()
     },
     onCancel () {
@@ -43,6 +44,7 @@ export default {
     },
     onClickLoadMore () {
       this.clearProjectList()
+      this.$refs.listView.setIsLoadEnd(false)
       setTimeout(() => {
         this.getProjectList({keyword : this.keyword}).then(() => {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)

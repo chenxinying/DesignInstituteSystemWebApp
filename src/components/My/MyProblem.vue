@@ -53,6 +53,7 @@ export default {
   },
   activated () {
     this.clearMyProblem()
+    this.$refs.listView.setIsLoadEnd(false)
     setTimeout(() => {
       this.addMyProblem().then(() => {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
@@ -75,6 +76,8 @@ export default {
       }, 1000)
     },
     onClickLoadMore () {
+      this.clearMyProblem()
+      this.$refs.listView.setIsLoadEnd(false)
       setTimeout(() => {
         this.addMyProblem(this.$refs.problemFilter.queryParams).then(() => {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
@@ -85,6 +88,7 @@ export default {
     },
     onClickSure () {
       this.clearMyProblem()
+      this.$refs.listView.setIsLoadEnd(false)
       this.onScrollEnd ()
     }
   }

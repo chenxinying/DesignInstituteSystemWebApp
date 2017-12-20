@@ -33,6 +33,7 @@ export default {
     ]),
     onClickSure () {
       this.clearSubProjectList(this.$route.params.id)
+      this.$refs.listView.setIsLoadEnd(false)
       this.onScrollEnd()
     },
     onScrollEnd () {
@@ -52,6 +53,8 @@ export default {
         project_id : this.$route.params.id,
         ...this.$refs.projectFilter.queryParams
       }
+      this.clearSubProjectList(this.$route.params.id)
+      this.$refs.listView.setIsLoadEnd(false)
       setTimeout(() => {
         this.getSubProjectList(queryParams).then(() => {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
@@ -63,6 +66,7 @@ export default {
   },
   activated () {
     this.clearSubProjectList(this.$route.params.id)
+    this.$refs.listView.setIsLoadEnd(false)
     var queryParams = {
       project_id : this.$route.params.id,
     }

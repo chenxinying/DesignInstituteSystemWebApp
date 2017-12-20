@@ -35,6 +35,7 @@ export default {
     ]),
     onSubmit () {
       this.clearTaskgroupList()
+      this.$refs.listView.setIsLoadEnd(false)
       this.onScrollEnd()
     },
     onCancel(){
@@ -60,6 +61,8 @@ export default {
         subprj_id : this.$route.params.subproject_id,
         keyword : this.keyword
       }
+      this.clearTaskgroupList()
+      this.$refs.listView.setIsLoadEnd(false)
       setTimeout(() => {
         this.getTaskgroupList(queryParams).then(() => {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
@@ -122,6 +125,7 @@ export default {
     this.keyword = ''
     this.initHeaderNames()
     this.clearTaskgroupList()
+    this.$refs.listView.setIsLoadEnd(false)
     this.onScrollEnd()
     this.$refs.search.cancel()
   }

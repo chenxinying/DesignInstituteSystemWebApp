@@ -67,6 +67,8 @@ export default {
       }, 1000)
     },
     onClickLoadMore () {
+      this.clearMyProject()
+      this.$refs.listView.setIsLoadEnd(false)
       setTimeout(() => {
         this.addMyProject(this.$refs.projectFilter.queryParams).then(() => {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
@@ -77,11 +79,13 @@ export default {
     },
     onClickSure () {
       this.clearMyProject()
+      this.$refs.listView.setIsLoadEnd(false)
       this.onScrollEnd()
     }
   },
   activated () {
     this.clearMyProject()
+    this.$refs.listView.setIsLoadEnd(false)
     setTimeout(() => {
       this.addMyProject().then(() => {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)

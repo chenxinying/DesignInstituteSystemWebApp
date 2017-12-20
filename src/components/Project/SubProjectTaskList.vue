@@ -52,6 +52,8 @@ export default {
         taskgroup_id : this.$route.params.taskgroup_id,
         ...this.$refs.taskFilter.queryParams
       }
+      this.clearTaskList(this.$route.params.taskgroup_id)
+      this.$refs.listView.setIsLoadEnd(false)
       setTimeout(() => {
         this.getTaskList(queryParams).then(() => {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
@@ -62,6 +64,7 @@ export default {
     },
     onClickSure () {
       this.clearTaskList(this.$route.params.taskgroup_id)
+      this.$refs.listView.setIsLoadEnd(false)
       this.onScrollEnd()
     },
     initHeaderNames () {
@@ -138,6 +141,7 @@ export default {
   },
   activated () {
     this.clearTaskList(this.$route.params.taskgroup_id)
+    this.$refs.listView.setIsLoadEnd(false)
     this.initHeaderNames()
     var queryParams = {
       taskgroup_id : this.$route.params.taskgroup_id,

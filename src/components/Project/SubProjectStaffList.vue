@@ -47,19 +47,23 @@ export default {
         subproject_id : this.$route.params.subproject_id,
         keyword : this.keyword
       }
-      this.updateStaffList(queryParams).then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-      })
+      setTimeout(() => {
+        this.updateStaffList(queryParams).then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+        })
+      }, 1000)
     },
     onClickLoadMore () {
       var queryParams = {
         subproject_id : this.$route.params.subproject_id,
         keyword : this.keyword
       }
-      this.updateStaffList(queryParams).then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.$refs.listView.addScrollHandler()
-      })
+      setTimeout(() => {
+        this.updateStaffList(queryParams).then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+          this.$refs.listView.addScrollHandler()
+        })
+      }, 1000)
     },
     initHeaderNames () {
       var project = this.projectList.find(item => item.project_id == this.$route.params.project_id)
@@ -109,6 +113,7 @@ export default {
   activated () {
     this.keyword = ''
     this.initHeaderNames()
+    this.$refs.listView.setIsLoadEnd(false)
     this.onScrollEnd()
     this.$refs.search.cancel()
   }

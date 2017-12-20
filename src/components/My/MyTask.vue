@@ -69,6 +69,8 @@ export default {
       }, 1000)
     },
     onClickLoadMore () {
+      this.clearMyTaskList()
+      this.$refs.listView.setIsLoadEnd(false)
       setTimeout(() => {
         this.addMyTaskList(this.$refs.taskFilter.queryParams).then(() => {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
@@ -79,15 +81,17 @@ export default {
     },
     onClickSure () {
       this.clearMyTaskList()
+      this.$refs.listView.setIsLoadEnd(false)
       this.onScrollEnd()
     }
   },
   activated () {
     this.clearMyTaskList()
+    this.$refs.listView.setIsLoadEnd(false)
     setTimeout(() => {
       this.addMyTaskList().then(() => {
-          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-          this.updateImage()
+        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+        this.updateImage()
       })
     }, 1000)
   }

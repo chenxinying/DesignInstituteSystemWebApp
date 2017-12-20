@@ -56,11 +56,14 @@ export default {
   activated () {
     this.initHeaderNames()
     this.clearProjectProblem()
+    this.$refs.listView.setIsLoadEnd(false)
     var query = {project_id : this.$route.params.project_id, subproject_id : this.$route.params.subproject_id}
-    this.addProjectProblem(query).then(() => {
-      this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-      this.updateImage()
-    })
+    setTimeout(() => {
+      this.addProjectProblem(query).then(() => {
+        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+        this.updateImage()
+      })
+    }, 1000)
   },
   data () {
     return {
@@ -75,20 +78,27 @@ export default {
       'updateImage'
     ]),
     onScrollEnd () {
-      this.addProjectProblem(this.$refs.problemFilter.queryParams).then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.updateImage()
-      })
+      setTimeout(() => {
+        this.addProjectProblem(this.$refs.problemFilter.queryParams).then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+          this.updateImage()
+        })
+      }, 1000)
     },
     onClickLoadMore () {
-      this.addProjectProblem(this.$refs.problemFilter.queryParams).then(() => {
-        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-        this.$refs.listView.addScrollHandler()
-        this.updateImage()
-      })
+      this.clearProjectProblem()
+      this.$refs.listView.setIsLoadEnd(false)
+      setTimeout(() => {
+        this.addProjectProblem(this.$refs.problemFilter.queryParams).then(() => {
+          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+          this.$refs.listView.addScrollHandler()
+          this.updateImage()
+        })
+      }, 1000)
     },
     onClickSure () {
       this.clearProjectProblem()
+      this.$refs.listView.setIsLoadEnd(false)
       this.onScrollEnd()
     },
     initHeaderNames () {
