@@ -6,7 +6,7 @@
     <div class="search-fix-top" style="top:46px;">
       <problem-filter source="my" :filter-charger-id="openid" :filter-state="1" @on-click-sure="onClickSure" ref="problemFilter"></problem-filter>
     </div>
-    <list-view :list="problems" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:91px;"></list-view>
+    <list-view :list="showList" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:91px;"></list-view>
   </div>
 </template>
 
@@ -25,7 +25,8 @@ export default {
   computed:{
     ...mapState({
         openid: state => state.openid,
-        problems: state => {
+        problems: state => state.problem_my.problems,
+        showList: state => {
           var showList = []
           state.problem_my.problems.forEach(element => {
 
@@ -52,6 +53,10 @@ export default {
       }),
   },
   activated () {
+    if(this.goBack){
+      this.updateImage()
+      return
+    }
     this.clearMyProblem()
     this.$refs.listView.setIsLoadEnd(false)
     setTimeout(() => {
@@ -59,13 +64,14 @@ export default {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.updateImage()
       })
-    }, 1000)
+    }, 500)
   },
   methods : {
      ...mapActions([
       'addMyProblem',
       'clearMyProblem',
-      'updateImage'
+      'updateImage',
+      'updateProblemDetail',
     ]),
     onScrollEnd () {
       setTimeout(() => {
@@ -73,23 +79,38 @@ export default {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
           this.updateImage()
         })
-      }, 1000)
+      }, 500)
     },
     onClickLoadMore () {
-      this.clearMyProblem()
       this.$refs.listView.setIsLoadEnd(false)
       setTimeout(() => {
+        this.clearMyProblem()
         this.addMyProblem(this.$refs.problemFilter.queryParams).then(() => {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
           this.$refs.listView.addScrollHandler()
           this.updateImage()
         })
-      }, 1000)
+      }, 500)
     },
     onClickSure () {
       this.clearMyProblem()
       this.$refs.listView.setIsLoadEnd(false)
       this.onScrollEnd ()
+    }
+  },
+  watch: {
+    '$route' (to, from) {
+      this.goBack = from.params.id ? true : false
+      if(to.params.id){
+        //设置问题详细信息
+        var problem = this.problems.find(item => item.id == to.params.id)
+        this.updateProblemDetail(problem)
+      }
+    }
+  },
+  data () {
+    return {
+      goBack : false
     }
   }
 }

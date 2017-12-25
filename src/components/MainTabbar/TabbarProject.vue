@@ -40,18 +40,18 @@ export default {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
           this.updateImage()
         })
-      }, 1000)
+      }, 500)
     },
     onClickLoadMore () {
-      this.clearProjectList()
       this.$refs.listView.setIsLoadEnd(false)
       setTimeout(() => {
+        this.clearProjectList()
         this.getProjectList({keyword : this.keyword}).then(() => {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
           this.$refs.listView.addScrollHandler()
           this.updateImage()
         })
-      }, 1000);
+      }, 500);
     },
   },
   data () {
@@ -93,7 +93,7 @@ export default {
       this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
       this.updateImage()
     })
-    }, 1000)
+    }, 500)
   }
 }
 </script>

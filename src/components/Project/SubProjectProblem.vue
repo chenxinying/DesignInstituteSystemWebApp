@@ -6,7 +6,7 @@
     <div class="search-fix-top" style="top:46px;">
       <problem-filter source="project" :filter-project-id="$route.params.project_id" :filter-subproject-id="$route.params.subproject_id"  @on-click-sure="onClickSure" ref="problemFilter"></problem-filter>
     </div>
-    <list-view :list="problems" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:91px;"></list-view>
+    <list-view :list="showList" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:91px;"></list-view>
   </div>
 </template>
 
@@ -24,7 +24,8 @@ export default {
   },
   computed:{
     ...mapState({
-        problems: state => {
+        problems: state => state.problem_project.problems,
+        showList: state => {
           var showList = []
           state.problem_project.problems.forEach(element => {
 
@@ -51,10 +52,15 @@ export default {
       projectList : state => state.project.projectList,
       subprojectList : state =>  state.project.subprojectList,
       myProjects : state => state.project_my.projects,
+      projectName : state => state.project_detail.subproject_detail.projectName,
+      subprojectName : state => state.project_detail.subproject_detail.name,
     }),
   },
   activated () {
-    this.initHeaderNames()
+    if(this.goBack){
+      this.updateImage()
+      return
+    }
     this.clearProjectProblem()
     this.$refs.listView.setIsLoadEnd(false)
     var query = {project_id : this.$route.params.project_id, subproject_id : this.$route.params.subproject_id}
@@ -63,19 +69,19 @@ export default {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.updateImage()
       })
-    }, 1000)
+    }, 500)
   },
   data () {
     return {
-      projectName: '',
-      subprojectName: ''
+      goBack : false
     }
   },
   methods : {
      ...mapActions([
       'addProjectProblem',
       'clearProjectProblem',
-      'updateImage'
+      'updateImage',
+      'updateProblemDetail',
     ]),
     onScrollEnd () {
       setTimeout(() => {
@@ -83,37 +89,33 @@ export default {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
           this.updateImage()
         })
-      }, 1000)
+      }, 500)
     },
     onClickLoadMore () {
-      this.clearProjectProblem()
       this.$refs.listView.setIsLoadEnd(false)
       setTimeout(() => {
+        this.clearProjectProblem()
         this.addProjectProblem(this.$refs.problemFilter.queryParams).then(() => {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
           this.$refs.listView.addScrollHandler()
           this.updateImage()
         })
-      }, 1000)
+      }, 500)
     },
     onClickSure () {
       this.clearProjectProblem()
       this.$refs.listView.setIsLoadEnd(false)
       this.onScrollEnd()
-    },
-    initHeaderNames () {
-      var project = this.projectList.find(item => item.project_id == this.$route.params.project_id)
-      this.projectName = project ? project.name : "模板厂家"
-
-      var subproject;
-      var project = this.subprojectList.find(item => item.project_id == this.$route.params.project_id)
-      if(project){
-        subproject = project.data.find(item => item.id == this.$route.params.subproject_id)
+    }
+  },
+  watch: {
+    '$route' (to, from) {
+      this.goBack = from.params.id ? true : false
+      if(to.params.id){
+        //设置问题详细信息
+        var problem = this.problems.find(item => item.id == to.params.id)
+        this.updateProblemDetail(problem)
       }
-      if(!subproject){
-        subproject = this.myProjects.find(item => item.subproject_id == this.$route.params.subproject_id)
-      }
-      this.subprojectName = subproject ?subproject.name : "项目"
     }
   }
 }

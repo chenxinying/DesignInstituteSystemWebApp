@@ -10,10 +10,6 @@ const state = {
   taskList : [],
 }
 
-const getters = {
-
-}
-
 const mutations = {
   [types.ADD_TASK_GROUP_LIST](state, lists){
     lists.forEach(element => {
@@ -99,7 +95,6 @@ const actions = {
 
 export default {
   state,
-  getters,
   mutations,
   actions
 }

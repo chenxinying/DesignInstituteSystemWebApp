@@ -33,6 +33,7 @@ export default {
       this.$refs.viewBox.getScrollBody().removeEventListener('scroll', this.onScroll, false)
       this.isLoadEnd = false
       this.$emit('on-click-load-more')
+      console.log(this.$refs.viewBox)
     },
     setIsLoadEnd (value) {
       this.isLoadEnd = value

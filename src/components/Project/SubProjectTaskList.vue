@@ -30,7 +30,8 @@ export default {
      ...mapActions([
       'getTaskList',
       'clearTaskList',
-      'updateImage'
+      'updateImage',
+      'updateTaskDetail',
     ]),
     onSubmit () {
       this.onClickSure()
@@ -45,50 +46,38 @@ export default {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
           this.updateImage()
         })
-      }, 1000)
+      }, 500)
     },
     onClickLoadMore () {
       var queryParams = {
         taskgroup_id : this.$route.params.taskgroup_id,
         ...this.$refs.taskFilter.queryParams
       }
-      this.clearTaskList(this.$route.params.taskgroup_id)
       this.$refs.listView.setIsLoadEnd(false)
       setTimeout(() => {
+        this.clearTaskList(this.$route.params.taskgroup_id)
         this.getTaskList(queryParams).then(() => {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
           this.$refs.listView.addScrollHandler()
           this.updateImage()
         })
-      }, 1000)
+      }, 500)
     },
     onClickSure () {
       this.clearTaskList(this.$route.params.taskgroup_id)
       this.$refs.listView.setIsLoadEnd(false)
       this.onScrollEnd()
     },
-    initHeaderNames () {
-      this.taskgroupName = this.taskgroupList.find(item => item.id == this.$route.params.taskgroup_id).name
-      var project = this.subprojectList.find(item => item.project_id == this.$route.params.project_id)
-      var subproject;
-      if(project){
-        subproject = project.data.find(item => item.id == this.$route.params.subproject_id)
-      }
-      if(!subproject){
-        subproject = this.myProjectList.find(item => item.subproject_id == this.$route.params.subproject_id)
-      }
-      this.subprojectName = subproject.name
-    }
   },
   data () {
     return {
       keyword: '',
-      subprojectName: '',
-      taskgroupName: ''
+      goBack : false
     }
   },
   computed: {
     ...mapState({
+        taskInfo: state => state.task.taskList.find(item => item.taskgroup_id == state.route.params.taskgroup_id),
         lists: state => {
             var showList = []
             var taskInfo = state.task.taskList.find(item => item.taskgroup_id == state.route.params.taskgroup_id)
@@ -134,15 +123,20 @@ export default {
           var taskInfo = state.task.taskList.find(item => item.taskgroup_id == state.route.params.taskgroup_id)
           return taskInfo ? taskInfo.loadEnd : false
         },
-        subprojectList : state => state.project.subprojectList,
-        myProjectList : state => state.project.myProjectList,
-        taskgroupList : state =>  state.task.taskgroupList
+        taskgroupName : state => {
+          return state.task.taskgroupList.find(item => item.id == state.route.params.taskgroup_id).name
+        },
+        taskgroupList : state => state.task.taskgroupList,
+        subprojectName : state => state.project_detail.subproject_detail.name,
       }),
   },
   activated () {
+    if(this.goBack){
+      this.updateImage()
+      return
+    }
     this.clearTaskList(this.$route.params.taskgroup_id)
     this.$refs.listView.setIsLoadEnd(false)
-    this.initHeaderNames()
     var queryParams = {
       taskgroup_id : this.$route.params.taskgroup_id,
     }
@@ -151,7 +145,23 @@ export default {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.updateImage()
       })
-    }, 1000)
+    }, 500)
+  },
+  watch: {
+    '$route' (to, from) {
+      this.goBack = from.params.task_id ? true : false
+      if(to.params.task_id){
+        var task = this.taskInfo.data.find(item => item.id == this.$route.params.task_id)
+        var taskDetail = {...task}
+        taskDetail.project_id =  this.$route.params.project_id
+        taskDetail.subproject_id = this.$route.params.subproject_id
+        taskDetail.subprj_name = this.subprojectName
+        taskDetail.taskgroup_id = this.$route.params.taskgroup_id
+        taskDetail.taskgroup_name = this.taskgroupName
+        taskDetail.task_id = taskDetail.id
+        this.updateTaskDetail(taskDetail)
+      }
+    }
   }
 }
 </script>

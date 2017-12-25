@@ -98,15 +98,7 @@ export default {
   computed : {
     ...mapState({
         subproject : state => {
-          var subproject;
-          var project = state.project.subprojectList.find(item => item.project_id == state.route.params.project_id)
-          if(project){
-            subproject = project.data.find(item => item.id == state.route.params.subproject_id)
-          }
-          if(!subproject){
-            subproject = state.project_my.projects.find(item => item.subproject_id == state.route.params.subproject_id)
-          }
-
+          var subproject = state.project_detail.subproject_detail;
           var currentTime = new Date().getTime()
           var dwgStartTime = new Date(subproject.start_time_plan).getTime()
           var dwgEndTime = new Date(subproject.dwg_end_plan).getTime()
@@ -123,13 +115,7 @@ export default {
           }
           return obj
       },
-      projectName : state => {
-        var project = state.project.projectList.find(item => item.project_id == state.route.params.project_id)
-        if(project) return project.name;
-        project = state.project_my.projects.find(item => item.id == state.route.params.subproject_id)
-        if(project) return project.projet_name;
-        return ""
-      },
+      projectName : state => state.project_detail.subproject_detail.projectName
     })
   },
   data () {

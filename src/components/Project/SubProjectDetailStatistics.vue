@@ -93,8 +93,8 @@ export default {
   },
   computed : {
     ...mapState({
-      problem_statistics : state => state.project.subproject_problem_statistics,
-      task_statistics : state => state.project.subproject_task_statistics
+      problem_statistics : state => state.project_detail.subproject_problem_statistics,
+      task_statistics : state => state.project_detail.subproject_task_statistics
     })
   },
 }

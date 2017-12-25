@@ -7,7 +7,7 @@
        <task-filter @on-click-sure="onClickSure" ref="taskFilter" :is-my-task="true"></task-filter>
     </div>
 
-    <list-view :list="projects" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:91px;"></list-view>
+    <list-view :list="showList" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:91px;"></list-view>
 
   </div>
 </template>
@@ -26,7 +26,8 @@ export default {
   },
   computed:{
     ...mapState({
-        projects: state => {
+        taskList: state => state.task_my.taskList,
+        showList: state => {
           var showList = []
           state.task_my.taskList.forEach(element => {
 
@@ -41,11 +42,6 @@ export default {
               title: element.name,
               desc: element.prj_name + "/" + element.subprj_name + "/" + element.taskgroup_name,
               url: '/project/' + element.project_id + '/subproject/' + element.subproject_id + "/taskgroup/" + element.taskgroup_id + "/task/" + element.task_id,
-              meta: {
-                //source: "开始：" + element.start_time_plan,
-                //date: "结束：" + element.end_time_plan,
-                //other: element.end_time_plan
-              }
             }
             showList.push(item)
           })
@@ -58,7 +54,8 @@ export default {
     ...mapActions([
       'addMyTaskList',
       'clearMyTaskList',
-      'updateImage'
+      'updateImage',
+      'updateTaskDetail',
     ]),
     onScrollEnd () {
       setTimeout(() => {
@@ -66,18 +63,18 @@ export default {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
           this.updateImage()
         })
-      }, 1000)
+      }, 500)
     },
     onClickLoadMore () {
-      this.clearMyTaskList()
       this.$refs.listView.setIsLoadEnd(false)
       setTimeout(() => {
+        this.clearMyTaskList()
         this.addMyTaskList(this.$refs.taskFilter.queryParams).then(() => {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
           this.$refs.listView.addScrollHandler()
           this.updateImage()
         })
-      }, 1000)
+      }, 500)
     },
     onClickSure () {
       this.clearMyTaskList()
@@ -86,6 +83,10 @@ export default {
     }
   },
   activated () {
+    if(this.goBack){
+      this.updateImage()
+      return
+    }
     this.clearMyTaskList()
     this.$refs.listView.setIsLoadEnd(false)
     setTimeout(() => {
@@ -93,7 +94,21 @@ export default {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.updateImage()
       })
-    }, 1000)
+    }, 500)
+  },
+  watch: {
+    '$route' (to, from) {
+      this.goBack = from.params.task_id ? true : false
+      if(to.params.task_id){
+        var taskDetail = this.taskList.find(item => item.task_id == to.params.task_id)
+        this.updateTaskDetail(taskDetail)
+      }
+    }
+  },
+  data () {
+    return {
+      goBack : false
+    }
   }
 }
 </script>

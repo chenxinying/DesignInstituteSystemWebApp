@@ -5,10 +5,10 @@
     </div>
 
     <div class="search-fix-top" style="top:46px;">
-      <project-filter :filter-project-id="$route.params.id" ref="projectFilter" @on-click-sure="onClickSure"></project-filter>
+      <project-filter :filter-project-id="$route.params.project_id" ref="projectFilter" @on-click-sure="onClickSure"></project-filter>
     </div>
 
-    <list-view header="项目列表" :list="subprojects" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:90px;"></list-view>
+    <list-view header="项目列表" :list="subprojects" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="margin-top:90px;"></list-view>
 
   </div>
 </template>
@@ -29,16 +29,17 @@ export default {
     ...mapActions([
       'getSubProjectList',
       'clearSubProjectList',
-      'updateImage'
+      'updateImage',
+      'updateSubprojectDetail'
     ]),
     onClickSure () {
-      this.clearSubProjectList(this.$route.params.id)
+      this.clearSubProjectList(this.$route.params.project_id)
       this.$refs.listView.setIsLoadEnd(false)
       this.onScrollEnd()
     },
     onScrollEnd () {
       var queryParams = {
-        project_id : this.$route.params.id,
+        project_id : this.$route.params.project_id,
         ...this.$refs.projectFilter.queryParams
       }
       setTimeout(() => {
@@ -46,37 +47,44 @@ export default {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
           this.updateImage()
         })
-      }, 1000)
+      }, 500)
     },
     onClickLoadMore () {
       var queryParams = {
-        project_id : this.$route.params.id,
+        project_id : this.$route.params.project_id,
         ...this.$refs.projectFilter.queryParams
       }
-      this.clearSubProjectList(this.$route.params.id)
       this.$refs.listView.setIsLoadEnd(false)
       setTimeout(() => {
+        this.clearSubProjectList(this.$route.params.project_id)
         this.getSubProjectList(queryParams).then(() => {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
           this.$refs.listView.addScrollHandler()
           this.updateImage()
         })
-      }, 1000)
+      }, 500)
     },
   },
   activated () {
-    this.clearSubProjectList(this.$route.params.id)
+    if(this.goBack){
+      this.updateImage()
+      return
+    }
+    this.clearSubProjectList(this.$route.params.project_id)
     this.$refs.listView.setIsLoadEnd(false)
     var queryParams = {
-      project_id : this.$route.params.id,
+      project_id : this.$route.params.project_id,
     }
     this.onScrollEnd()
   },
   computed : {
       ...mapState({
+      subprojectInfo : state =>{
+        return state.project.subprojectList.find(item => item.project_id == state.route.params.project_id)
+      },
       subprojects: state => {
           var showList = []
-          var subprojectInfo = state.project.subprojectList.find(item => item.project_id == state.route.params.id)
+          var subprojectInfo = state.project.subprojectList.find(item => item.project_id == state.route.params.project_id)
           var currentTime = new Date().getTime()
 
           subprojectInfo && subprojectInfo.data.forEach(element => {
@@ -109,14 +117,28 @@ export default {
           return showList
         },
       isLoadEnd : state => {
-        var subprojectInfo = state.project.subprojectList.find(item => item.project_id == state.route.params.id)
+        var subprojectInfo = state.project.subprojectList.find(item => item.project_id == state.route.params.project_id)
         return subprojectInfo ? subprojectInfo.loadEnd : false
       },
       projectName : state => {
-        var project = state.project.projectList.find(item => item.project_id == state.route.params.id)
+        var project = state.project.projectList.find(item => item.project_id == state.route.params.project_id)
         return project ? project.name : "项目列表"
       }
     }),
+  },
+  watch: {
+    '$route' (to, from) {
+      this.goBack = from.params.subproject_id ? true : false
+      if(to.params.subproject_id){
+        var subproject_detail = this.subprojectInfo.data.find(item => item.id == this.$route.params.subproject_id)
+        this.updateSubprojectDetail({projectName:this.projectName, ...subproject_detail})
+      }
+    }
+  },
+  data () {
+    return {
+      goBack : false,
+    }
   }
 }
 </script>

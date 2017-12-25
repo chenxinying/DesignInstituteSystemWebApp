@@ -21,7 +21,7 @@ export default {
   },
   computed : {
     ...mapState({
-      time_lines : state => state.project.subproject_time_lines,
+      time_lines : state => state.project_detail.subproject_time_lines,
     })
   },
 }

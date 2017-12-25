@@ -53,17 +53,9 @@ export default {
       this.$refs.previewer.show(index)
     }
   },
-  mounted () {
-    if(!this.problem_info){
-      this.$router.push('/problem')
-    }
-  },
   computed : {
     ...mapState({
-      problem_info : state => {
-        var realProblems =  (state.problem.problems && state.problem.problems.length > 0) ? state.problem.problems : JSON.parse(sessionStorage.getItem('problems'))
-        return realProblems && realProblems.find(item => item.id == state.route.params.id)
-      }
+      problem_info : state => state.problem_detail.problem_detail
     }),
     list () {
       var list = []

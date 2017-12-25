@@ -24,6 +24,7 @@ export default {
   },
   computed:{
     ...mapState({
+        myProjects: state => state.project_my.projects,
         projects: state => {
           var showList = []
           state.project_my.projects.forEach(element => {
@@ -56,7 +57,8 @@ export default {
     ...mapActions([
       'addMyProject',
       'clearMyProject',
-      'updateImage'
+      'updateImage',
+      'updateSubprojectDetail'
     ]),
     onScrollEnd () {
       setTimeout(() => {
@@ -64,18 +66,18 @@ export default {
             this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
             this.updateImage()
         })
-      }, 1000)
+      }, 500)
     },
     onClickLoadMore () {
-      this.clearMyProject()
       this.$refs.listView.setIsLoadEnd(false)
       setTimeout(() => {
+        this.clearMyProject()
         this.addMyProject(this.$refs.projectFilter.queryParams).then(() => {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
           this.$refs.listView.addScrollHandler()
           this.updateImage()
         })
-      }, 1000)
+      }, 500)
     },
     onClickSure () {
       this.clearMyProject()
@@ -84,14 +86,32 @@ export default {
     }
   },
   activated () {
+    if(this.goBack){
+      this.updateImage()
+      return
+    }
     this.clearMyProject()
     this.$refs.listView.setIsLoadEnd(false)
     setTimeout(() => {
       this.addMyProject().then(() => {
-          this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
-          this.updateImage()
+        this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
+        this.updateImage()
       })
-    }, 1000)
+    }, 500)
+  },
+  watch: {
+    '$route' (to, from) {
+      this.goBack = from.params.subproject_id ? true : false
+      if(to.params.subproject_id){
+        var project = this.myProjects.find(item => item.subproject_id == this.$route.params.subproject_id)
+        this.updateSubprojectDetail({projectName:project.projet_name, ...project})
+      }
+    }
+  },
+  data () {
+    return {
+      goBack : false
+    }
   }
 }
 </script>

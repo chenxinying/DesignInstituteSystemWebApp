@@ -1,6 +1,7 @@
 import api from '../../api'
 import * as types from '../mutation-types'
 
+//子项目人员列表
 const state = {
   loadEnd : true,
   start : 0,

@@ -83,7 +83,7 @@ export default {
   },
   computed : {
     ...mapState({
-      flow_states : state => state.project.subproject_flow_states,
+      flow_states : state => state.project_detail.subproject_flow_states,
     })
   },
 }

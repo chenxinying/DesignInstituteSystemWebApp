@@ -3,7 +3,7 @@
     <div class="search-fix-top">
       <problem-filter @on-click-sure="onClickSure" ref="problemFilter"></problem-filter>
     </div>
-    <list-view header="问题列表" :list="problems" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:45px;"></list-view>
+    <list-view header="问题列表" :list="showList" type="5" @on-scroll-end="onScrollEnd" @on-click-load-more="onClickLoadMore" ref="listView" style="padding-top:45px;"></list-view>
   </div>
 </template>
 
@@ -22,7 +22,8 @@ export default {
      ...mapActions([
       'addProblem',
       'clearProblem',
-      'updateImage'
+      'updateImage',
+      'updateProblemDetail',
     ]),
     onScrollEnd () {
       setTimeout(() => {
@@ -30,18 +31,18 @@ export default {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
           this.updateImage()
         })
-      }, 1000)
+      }, 500)
     },
     onClickLoadMore () {
-      this.clearProblem()
       this.$refs.listView.setIsLoadEnd(false)
       setTimeout(() => {
+        this.clearProblem()
         this.addProblem(this.$refs.problemFilter.queryParams).then(() => {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
           this.$refs.listView.addScrollHandler()
           this.updateImage()
         })
-      }, 1000)
+      }, 500)
     },
     onClickSure () {
       this.clearProblem()
@@ -51,7 +52,8 @@ export default {
   },
   computed : {
     ...mapState({
-      problems: state => {
+      problems: state => state.problem.problems,
+      showList: state => {
           var showList = []
           state.problem.problems.forEach(element => {
 
@@ -83,8 +85,17 @@ export default {
         this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
         this.updateImage()
       })
-    }, 1000)
+    }, 500)
   },
+  watch: {
+    '$route' (to, from) {
+      if(to.params.id){
+        //设置问题详细信息
+        var problem = this.problems.find(item => item.id == to.params.id)
+        this.updateProblemDetail(problem)
+      }
+    }
+  }
 }
 
 </script>

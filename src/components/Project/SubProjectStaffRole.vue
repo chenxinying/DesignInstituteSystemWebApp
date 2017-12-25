@@ -5,14 +5,37 @@
       <x-header>{{projectName}}/{{subprojectName}}/</x-header>
     </div>
 
-    <div class="search-fix-top" style="top:46px;">
-      <checklist title="角色详情" disabled label-position="left" :options="checklist" v-model="checklist"></checklist>
+    <div style="margin-top:45px;height:100%;overflow:auto" @scroll="onScroll">
+      <checklist title="项目身份" disabled label-position="left" :options="checklist" v-model="checklist"></checklist>
+      <group-title>参与任务</group-title>
+      <grid :cols="3">
+        <grid-item v-for="item in taskList" :key="item.task_id" :link="item.link">
+          <span class="grid-center">
+            <flexbox :gutter="5" class="flexbox-demo">
+              <flexbox-item :span="6">
+                <div class="flex-img">
+                  <img :src="item.src" style="height:50px;width:50px;overflow:hidden;" class="weui-media-box__thumb">
+                </div>
+              </flexbox-item>
+              <flexbox-item>
+                <div class="flex-info">
+                  {{item.name}}
+                </div>
+                <div class="flex-info" style="font-size:70%;">
+                  {{stateArray[item.state]}}
+                </div>
+              </flexbox-item>
+          </flexbox>
+          </span>
+        </grid-item>
+      </grid>
+      <load-more :tip="tip" :show-loading="!isLoadEnd" background-color="#fbf9fe"></load-more>
     </div>
   </div>
 </template>
 
 <script>
-import { Search, XHeader, Card, Group, Checklist } from 'vux'
+import { Search, XHeader, Card, Group, Checklist, Flexbox, FlexboxItem, Divider, Grid, GridItem, GroupTitle, LoadMore } from 'vux'
 import { mapState, mapActions } from 'vuex'
 import ListView from '../ListView'
 
@@ -23,61 +46,113 @@ export default {
     XHeader,
     Card,
     Group,
-    Checklist
+    Checklist,
+    Flexbox,
+    FlexboxItem,
+    Divider,
+    Grid,
+    GridItem,
+    GroupTitle,
+    LoadMore
   },
   methods: {
      ...mapActions([
-
+      'addStaffTaskList',
+      'clearStaffTaskList',
+      'updateImage',
+      'updateTaskDetail',
     ]),
     onSubmit () {
     },
-    initHeaderNames () {
-
-      var project = this.projectList.find(item => item.project_id == this.$route.params.project_id)
-      this.projectName = project ? project.name : "模板厂家"
-
-      var subproject;
-      var project = this.subprojectList.find(item => item.project_id == this.$route.params.project_id)
-      if(project){
-        subproject = project.data.find(item => item.id == this.$route.params.subproject_id)
+    onScroll (e) {
+      //滚动至底部
+      if(e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight && !this.isLoadEnd){
+        this.addStaffTaskList({openid:this.$route.params.openid,subproject_id:this.subproject_id}).then(()=>{
+          this.updateImage()
+        })
       }
-      if(!subproject){
-        subproject = this.myProjects.find(item => item.subproject_id == this.$route.params.subproject_id)
-      }
-      this.subprojectName = subproject ?subproject.name : "项目"
+    },
+    initChecklist () {
+      this.checklist = []
+      this.role.rolelist.forEach(element => {
+        this.checklist.push(element.name)
+      });
     }
   },
   data () {
     return {
-      projectName: '',
-      subprojectName: '',
-      strArrays : ['', '区域经理', '底图组', '总工室总工', '总工室变化层设计组', '总工室施工图组', '	检查组', '	设计组'],
-      commonList: [ '区域经理', '底图组', '总工室总工', '总工室变化层设计组', '总工室施工图组', '	检查组', '	设计组'],
-      //checklist: [ '区域经理', '底图组' ],
+      stateArray : ["", "待完成", "待审核", "已完成"],
+      checklist: [],
     }
   },
   computed: {
     ...mapState({
         role: state => state.project_staff.staffList.find(item => item.openid == state.route.params.openid),
-        projectList : state => state.project.projectList,
-        subprojectList : state =>  state.project.subprojectList,
-        myProjects : state => state.project_my.projects,
+        taskList: state => {
+          var bgArray = ['F86E61', '4DA9EA', '05CC91', 'F8B65F', '578AA9', '5F70A8']
+          var lists = []
+          state.task_staff.taskList.forEach(item => {
+              var bgIndex = item.task_id % bgArray.length
+              var src = "holder.js/50x50?fg=fff"
+              src += "&text=" +  item.name
+              src += "&bg=" + bgArray[bgIndex]
+              lists.push({
+                src : src,
+                link : "/project/" + item.project_id + "/subproject/" + item.subproject_id + "/taskgroup/" + item.taskgroup_id + "/task/" + item.task_id,
+                ...item
+              })
+          })
+          return lists
+        },
+        isLoadEnd: state => state.task_staff.loadEnd,
+        projectName : state => state.project_detail.subproject_detail.projectName,
+        subprojectName : state => state.project_detail.subproject_detail.name,
+        subproject_id: state => state.project_detail.subproject_detail.id
       }),
-    checklist : function(){
-      var lists = []
-      var ids = this.role.role_id.split(",")
-      ids.forEach(element => {
-        lists.push(this.strArrays[element])
-      });
-      return lists
-    }
+    tip: function() {
+      return this.isLoadEnd ? '暂无数据' : '正在加载'
+    },
   },
   activated () {
-    this.initHeaderNames()
+    this.initChecklist()
+    this.clearStaffTaskList()
+    this.addStaffTaskList({openid:this.$route.params.openid,subproject_id:this.subproject_id}).then(()=>{
+      this.updateImage()
+    })
+  },
+  watch :{
+    '$route' (to, from) {
+      if(to.params.task_id){
+        var taskDetail = this.taskList.find(item => item.task_id == to.params.task_id)
+        this.updateTaskDetail(taskDetail)
+      }
+    }
   }
 }
 </script>
 
-<style scoped lang="less">
 
+<style scoped lang="less">
+@import '~vux/src/styles/1px.less';
+.flex-demo {
+  text-align: center;
+  margin-left : 10px;
+  padding-left: 2px;
+  display: block;
+}
+.flex-img {
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  max-width: 50px;
+  max-height: 50px;
+}
+.flex-info {
+  text-align: left;
+}
+.grid-center {
+  display: block;
+  text-align: center;
+  color: #000;
+}
 </style>

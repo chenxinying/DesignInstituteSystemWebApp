@@ -54,43 +54,28 @@ export default {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
           this.updateImage()
         })
-      }, 1000)
+      }, 500)
     },
     onClickLoadMore () {
       var queryParams = {
         subprj_id : this.$route.params.subproject_id,
         keyword : this.keyword
       }
-      this.clearTaskgroupList()
       this.$refs.listView.setIsLoadEnd(false)
       setTimeout(() => {
+        this.clearTaskgroupList()
         this.getTaskgroupList(queryParams).then(() => {
           this.$refs.listView.setIsLoadEnd(this.isLoadEnd)
           this.$refs.listView.addScrollHandler()
           this.updateImage()
         })
-      }, 1000)
+      }, 500)
     },
-    initHeaderNames () {
-      var project = this.projectList.find(item => item.project_id == this.$route.params.project_id)
-      this.projectName = project ? project.name : "模板厂家"
-
-      var subproject;
-      var project = this.subprojectList.find(item => item.project_id == this.$route.params.project_id)
-      if(project){
-        subproject = project.data.find(item => item.id == this.$route.params.subproject_id)
-      }
-      if(!subproject){
-        subproject = this.myProjects.find(item => item.subproject_id == this.$route.params.subproject_id)
-      }
-      this.subprojectName = subproject ?subproject.name : "项目"
-    }
   },
   data () {
     return {
       keyword: '',
-      projectName: '',
-      subprojectName: ''
+      goBack : false
     }
   },
   computed: {
@@ -119,15 +104,26 @@ export default {
         projectList : state => state.project.projectList,
         subprojectList : state =>  state.project.subprojectList,
         myProjects : state => state.project_my.projects,
+        projectName : state => state.project_detail.subproject_detail.projectName,
+        subprojectName : state => state.project_detail.subproject_detail.name,
       }),
   },
   activated () {
     this.keyword = ''
-    this.initHeaderNames()
+    this.$refs.search.cancel()
+
+    if(this.goBack){
+      this.updateImage()
+      return
+    }
     this.clearTaskgroupList()
     this.$refs.listView.setIsLoadEnd(false)
     this.onScrollEnd()
-    this.$refs.search.cancel()
+  },
+  watch: {
+    '$route' (to, from) {
+      this.goBack = from.params.taskgroup_id ? true : false
+    }
   }
 }
 </script>
