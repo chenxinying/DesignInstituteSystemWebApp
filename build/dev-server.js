@@ -23,13 +23,6 @@ var proxyTable = config.dev.proxyTable
 var app = express()
 var compiler = webpack(webpackConfig)
 
-var goodsData = require('../problem.json')
-var router = express.Router()
-router.get("/problem", function (req,res) {
-  res.json(goodsData)
-})
-app.use(router)
-
 var devMiddleware = require('webpack-dev-middleware')(compiler, {
   publicPath: webpackConfig.output.publicPath,
   quiet: true
