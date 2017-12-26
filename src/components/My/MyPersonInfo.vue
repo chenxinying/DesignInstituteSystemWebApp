@@ -12,7 +12,7 @@
     <group>
       <cell title="公司名称" :value="userInfo.company_name"></cell>
     </group>
-    <checklist title="身份详情" disabled label-position="left" :options="checklist" v-model="checklist"></checklist>
+    <!--<checklist title="身份详情" disabled label-position="left" :options="checklist" v-model="checklist"></checklist>-->
   </div>
 </template>
 
@@ -33,11 +33,11 @@ export default {
         userInfo : state => state.user_info
       }),
     checklist: function(){
-      var checklist = []
-      this.userInfo.roles.forEach(element => {
-        checklist.push(element.name)
-      });
-      return checklist
+      // var checklist = []
+      // this.userInfo.roles.forEach(element => {
+      //   checklist.push(element.name)
+      // });
+      // return checklist
     }
   },
 }

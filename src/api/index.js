@@ -1,7 +1,8 @@
 import Vue from 'vue'
 
-let _request_host = "/design_institute/public/"
-//let _request_host = "http://192.168.3.158/DesignInstituteSystem/design_institute/public/"
+//let _request_host = "/design_institute/public/"
+let _request_host = "http://192.168.3.158/DesignInstituteSystem/design_institute/public/"
+//let _request_host = "http://192.168.3.40/design_institute/public/"
 
 export default {
   //获取总项目<id，名字>键值数组
