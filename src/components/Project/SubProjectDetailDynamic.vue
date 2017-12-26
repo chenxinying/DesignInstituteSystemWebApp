@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import { Timeline, TimelineItem} from 'vux'
-import { mapState, mapActions } from 'vuex'
+import { Timeline, TimelineItem } from 'vux'
+import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -53,4 +53,5 @@ vertical-align: middle;
      font-size: 0.8rem;
   }
 }
+
 </style>

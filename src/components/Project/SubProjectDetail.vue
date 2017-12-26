@@ -62,8 +62,19 @@ export default {
     TransferDom
   },
   components: {
-    XHeader, Group, Cell, Clocker, Actionsheet ,Tab, TabItem, Swiper, SwiperItem,
-    Statistics, Schedule, NodesRecord, DynamicRecord
+    XHeader, 
+    Group, 
+    Cell, 
+    Clocker, 
+    Actionsheet,
+    Tab, 
+    TabItem, 
+    Swiper, 
+    SwiperItem,
+    Statistics, 
+    Schedule, 
+    NodesRecord,
+    DynamicRecord
   },
   methods: {
     ...mapActions(['getSubprojectFlowState', 'getProjectTrailInfo', 'getSubprojectProblemStatistics', 'getSubprojectTaskStatistics']),
