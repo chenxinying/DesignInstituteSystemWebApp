@@ -19,7 +19,7 @@
               </flexbox-item>
               <flexbox-item>
                 <div class="flex-info">
-                  {{item.name}}
+                  {{item.show_name}}
                 </div>
                 <div class="flex-info" style="font-size:70%;">
                   {{stateArray[item.state]}}
@@ -94,12 +94,18 @@ export default {
           state.task_staff.taskList.forEach(item => {
               var bgIndex = item.task_id % bgArray.length
               var src = "holder.js/50x50?fg=fff"
-              src += "&text=" +  item.name
+              src += "&text=" +  item.name.substring(0, 3)
               src += "&bg=" + bgArray[bgIndex]
+
+              var show_name = item.name
+              if(show_name.length > 3)
+                show_name = show_name.substring(0, 2) + "..."
+
               lists.push({
                 src : src,
                 link : "/project/" + item.project_id + "/subproject/" + item.subproject_id + "/taskgroup/" + item.taskgroup_id + "/task/" + item.task_id,
-                ...item
+                ...item,
+                show_name : show_name
               })
           })
           return lists
