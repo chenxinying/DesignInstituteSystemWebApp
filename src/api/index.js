@@ -1,7 +1,7 @@
 import Vue from 'vue'
 
 //let _request_host = "/design_institute/public/"
-let _request_host = "http://192.168.1.123/DesignInstituteSystem/design_institute/public/"
+let _request_host = "http://192.168.1.173/DesignInstituteSystem/design_institute/public/"
 //let _request_host = "http://192.168.3.40/design_institute/public/"
 
 export default {

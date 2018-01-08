@@ -93,7 +93,6 @@ export default {
     this.getProjectTrailInfo({prj_id : this.$route.params.project_id, subproject_id : this.$route.params.subproject_id})
     this.getSubprojectProblemStatistics({subproject_id : this.$route.params.subproject_id})
     this.getSubprojectTaskStatistics({subproject_id : this.$route.params.subproject_id})
-    this.getTotalTaskList({subprj_id : this.$route.params.subproject_id})
   },
   watch: {
     index: function (newIndex) {
