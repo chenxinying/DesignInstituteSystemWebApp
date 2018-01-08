@@ -10,7 +10,7 @@
         <tab-item class="vux-center" :selected="demo === item" v-for="(item, index) in list" @click="demo = item" :key="index">{{item}}</tab-item>
       </tab>
     </div>
-      <swiper v-model="index" height="650px" :show-dots="false" style="padding-top:90px;" ref="swiper">
+      <swiper v-model="index" height="1650px" :show-dots="false" style="padding-top:90px;" ref="swiper">
         <swiper-item :key="0">
           <div class="tab-swiper">
             <schedule :subproject="subproject"></schedule>
@@ -77,7 +77,7 @@ export default {
     DynamicRecord
   },
   methods: {
-    ...mapActions(['getSubprojectFlowState', 'getProjectTrailInfo', 'getSubprojectProblemStatistics', 'getSubprojectTaskStatistics']),
+    ...mapActions(['getSubprojectFlowState', 'getProjectTrailInfo', 'getSubprojectProblemStatistics', 'getSubprojectTaskStatistics', 'getTotalTaskList']),
     click (key) {
       if(key == 'task'){
         this.$router.push(this.$route.params.subproject_id + "/taskgroup")
@@ -93,6 +93,7 @@ export default {
     this.getProjectTrailInfo({prj_id : this.$route.params.project_id, subproject_id : this.$route.params.subproject_id})
     this.getSubprojectProblemStatistics({subproject_id : this.$route.params.subproject_id})
     this.getSubprojectTaskStatistics({subproject_id : this.$route.params.subproject_id})
+    this.getTotalTaskList({subprj_id : this.$route.params.subproject_id})
   },
   watch: {
     index: function (newIndex) {
@@ -100,7 +101,7 @@ export default {
         var h = this.$refs.swiper.$children[2].$el.scrollHeight
         this.$refs.swiper.xheight = h + "px"
       }else if(newIndex == 0){
-        this.$refs.swiper.xheight = "650px"
+        this.$refs.swiper.xheight = "1650px"
       }else{
         this.$refs.swiper.xheight = "600px"
       }
@@ -126,7 +127,8 @@ export default {
           }
           return obj
       },
-      projectName : state => state.project_detail.subproject_detail.projectName
+      projectName : state => state.project_detail.subproject_detail.projectName,
+      totalTaskList : state => state.project_detail.totalTaskList,
     })
   },
   data () {

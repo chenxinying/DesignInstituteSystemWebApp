@@ -1,6 +1,6 @@
 <template>
   <div style="height:100%;">
-  <highcharts :options="options" ref="highcharts"></highcharts>
+  <highcharts :options="options0" ref="highcharts"></highcharts>
 
   <group title="倒计时">
     <cell title="底图还剩">
@@ -18,7 +18,7 @@
       </clocker>
     </cell>
   </group>
-
+  
   </div>
 </template>
 
@@ -29,6 +29,7 @@ import VueHighcharts from 'vue-highcharts';
 import Highcharts from 'highcharts';
 import loadHighchartsMore from 'highcharts/highcharts-more';
 import loadXrange from 'highcharts/modules/xrange';
+import { mapState, mapActions } from 'vuex'
 loadHighchartsMore(Highcharts);
 loadXrange(Highcharts)
 Vue.use(VueHighcharts, { Highcharts });
@@ -38,15 +39,47 @@ export default {
     Group, Cell, Clocker
   },
   computed: {
-    options : function() {
-
-      return {
-
+    ...mapState({
+      totalTaskList : state => state.project_detail.totalTaskList,
+    }),
+  },
+  props: ['subproject'],
+  methods: {
+    ...mapActions(['getTotalTaskList']),
+    getCategories(index) {
+      var subtask_list = this.totalTaskList[index].subtask_list
+      var categories = []
+      subtask_list.forEach(item => {
+        categories.push(item.name)
+      })
+      return categories
+    },
+    getData(index){
+      var data = []
+      var subtask_list = this.totalTaskList[index].subtask_list
+      for(var i = 0; i < subtask_list.length; ++i){
+        var data_item = {}
+        
+        var st = subtask_list[i].start_time_plan ? new Date(subtask_list[i].start_time_plan) : new Date();
+        var ed = subtask_list[i].end_time_real ? new Date(subtask_list[i].end_time_real) : new Date();
+        data_item.x = st.getTime()
+        data_item.x2 = ed.getTime()
+        data_item.y = i
+        data_item.partialFill = 0.25
+        data.push(data_item)
+      }
+      return data
+    },
+    
+  },
+  data () {
+    return {
+      options0: {
         chart: {
             type: 'xrange'
         },
         title: {
-            text: '项目进度图'
+            text: "底图"
         },
         credits: {
           enabled: false
@@ -60,13 +93,16 @@ export default {
             type: 'datetime',
             dateTimeLabelFormats: {
               week: '%Y/%m/%d'
+            },
+            labels:{
+              enabled : false
             }
         },
         yAxis: {
             title: {
                 text: ''
             },
-            categories: ['底图', '设计'],
+            categories: ["a"],
             reversed: true
         },
         series: [{
@@ -75,18 +111,7 @@ export default {
             // groupPadding: 0,
             borderColor: 'gray',
             pointWidth: 20,
-            data: [{
-                x: (new Date(this.subproject.start_time_plan)).getTime(),
-                x2: (new Date(this.subproject.dwg_end_plan)).getTime(),
-                y: 0,
-                partialFill: parseFloat(this.subproject.dwgPercent)
-            }, {
-                color: '#ffcb80',
-                x: (new Date(this.subproject.design_start_plan)).getTime(),
-                x2: (new Date(this.subproject.end_time_plan)).getTime(),
-                y: 1,
-                partialFill: parseFloat(this.subproject.designPercent)
-            }],
+            data: [{}],
             dataLabels: {
                 enabled: true
             }
@@ -95,6 +120,54 @@ export default {
       }
     }
   },
-  props: ['subproject'],
+  activated() {
+    this.getTotalTaskList({subprj_id : this.$route.params.subproject_id}).then(() => {
+        this.options0 = {
+          chart: {
+              type: 'xrange'
+          },
+          title: {
+              text: "底图"
+          },
+          credits: {
+            enabled: false
+          },
+          tooltip: {
+            dateTimeLabelFormats: {
+              day: '%Y/%m/%d'
+            }
+          },
+          xAxis: {
+              type: 'datetime',
+              dateTimeLabelFormats: {
+                week: '%Y/%m/%d'
+              },
+            labels:{
+              enabled : false
+            }
+          },
+          yAxis: {
+              title: {
+                  text: ''
+              },
+              categories: this.getCategories(0),
+              reversed: true
+          },
+          series: [{
+              name: this.subproject.name,
+              // pointPadding: 0,
+              // groupPadding: 0,
+              borderColor: 'gray',
+              pointWidth: 20,
+              data: this.getData(0),
+              dataLabels: {
+                  enabled: true
+              }
+          }]
+
+        }
+      }
+    )
+  }
 }
 </script>

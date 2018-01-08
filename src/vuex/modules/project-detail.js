@@ -10,6 +10,8 @@ const state = {
 
   subproject_problem_statistics : {}, //子项目问题统计
   subproject_task_statistics : {},    //子项目任务统计
+
+  totalTaskList : [], //所有的任务
 }
 
 const mutations = {
@@ -33,7 +35,10 @@ const mutations = {
   },
   [types.UPDATE_SUBPROJECT_TASK_STATISTICS] (state, statistics){
     state.subproject_task_statistics = statistics
-  }
+  },
+  [types.UPDATE_SUBPROJECT_TOTAL_TASK] (state, list){
+    state.totalTaskList = list
+  },
 }
 
 const actions = {
@@ -84,6 +89,18 @@ const actions = {
           resolve()
         },
         statistics => {
+          resolve()
+        })
+      })
+  },
+  getTotalTaskList({commit}, param){
+    return new Promise((resolve, reject) => {
+      api.getTotalTaskList(param,
+        list => {
+          commit(types.UPDATE_SUBPROJECT_TOTAL_TASK, list)
+          resolve()
+        },
+        list => {
           resolve()
         })
       })
